@@ -8,3 +8,12 @@ services:
     environment:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
+  neo4j-config-cli:
+    image: graphaware/neo4j-config-cli:1.0.0-SNAPSHOT
+    environment:
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=password
+      - NEO4J_URI=bolt://neo4j:7687
+      - IMPORT_PATH=/config
+    volumes:
+      - "./examples/config:/config"
