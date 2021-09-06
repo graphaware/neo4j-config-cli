@@ -1,0 +1,27 @@
+{
+  "kind": "Role",
+  "name": "ut1",
+  "dropIfExists": true,
+  "privileges": [
+    {
+      "graph": "*",
+      "access": true,
+      "rules": [
+        {
+          "target": "node",
+          "labels": "*",
+          "action": "match",
+          "resource": "all_properties",
+          "access": "GRANTED"
+        },
+        {
+          "target": "node",
+          "labels": "Person",
+          "action": "read",
+          "resource": "born",
+          "access": "DENIED"
+        }
+      ]
+    }
+  ]
+}

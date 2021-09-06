@@ -1,0 +1,21 @@
+{
+  "kind": "Database",
+  "name": "movies",
+  "dropIfExists": "true",
+  "indexes": {
+    "fulltext" : [
+      {
+        "labels": ["Person"],
+        "properties": ["name"],
+        "name": "Person"
+      }
+    ],
+    "uniqueness": [
+      {
+        "label": "Person",
+        "property": "name"
+      }
+    ]
+  },
+  "seeds": ["movies.cypher"]
+}
