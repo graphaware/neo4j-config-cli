@@ -2,20 +2,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.5.4</version>
 		<relativePath/>
 	</parent>
+
 	<groupId>com.graphaware</groupId>
 	<artifactId>neo4j-config-cli</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
+
+	<organization>
+		<name>Graph Aware Limited</name>
+		<url>http://graphaware.com</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>@ikwattro</id>
+			<name>Christophe Willemsen</name>
+		</developer>
+	</developers>
+
 	<name>neo4j-config-cli</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Neo4j Utility tool for ensuring the desired state of a Neo4j instance based on json/yml definitions</description>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -68,13 +85,13 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>1.15.3</version>
+			<version>1.16.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>neo4j</artifactId>
-			<version>1.15.3</version>
+			<version>1.16.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -83,7 +100,6 @@
 			<version>3.20.2</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
