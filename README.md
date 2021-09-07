@@ -102,7 +102,8 @@ Two `kind` of config files are supported today :
 {
   "kind": "Database",
   "name": "movies",
-  "dropIfExists": "true",
+  "dropIfExists": true,
+  "skipCreate": false,
   "indexes": {
     "fulltext" : [
       {
@@ -157,6 +158,24 @@ Two `kind` of config files are supported today :
   ]
 }
 ```
+
+---
+
+## Neo4j Aura
+
+The command `CREATE DATABASE` is not available on Neo4j aura, you thus have to skip the step where this tool will 
+execute that command by specifying `skipCreate = true` : 
+
+```json
+{
+  "kind": "Database",
+  "name": "neo4j",
+  "skipCreate": true
+}
+```
+
+A full working example with Aura is available [here](./examples/aura) after inserting your Neo4j Aura credentials in 
+the docker-compose file.
 
 ---
 

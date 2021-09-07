@@ -20,15 +20,20 @@ public class CreateDatabaseService {
     }
 
     public void createDatabase(Database database) {
-        createDatabase(database.getName(), database.isDropIfExists());
+        createDatabase(database.getName(), database.isDropIfExists(), database.isSkipCreate());
         createIndexes(database);
         createConstraints(database);
     }
 
-    public void createDatabase(String name, boolean dropIfExists) {
+    public void createDatabase(String name, boolean dropIfExists, boolean skipCreate) {
+        if (skipCreate) {
+            LOG.info("Skipping creation of database {}", name);
+            return;
+        }
         if (dropIfExists) {
             dropDatabaseIfExists(name);
         }
+
         String query = String.format("CREATE DATABASE %s IF NOT EXISTS", name);
         LOG.info("Creating database {} ", name);
         LOG.debug("Query : {}", query);

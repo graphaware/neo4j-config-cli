@@ -13,7 +13,7 @@ import java.util.List;
 public class CreateDatabaseTest extends Neo4jIntegrationBase {
 
     private Database database(String name, boolean dropIfExists) {
-        return new Database(name, dropIfExists, new Indexes(), new Constraints(), List.of());
+        return new Database(name, dropIfExists, false, new Indexes(), new Constraints(), List.of());
     }
 
     @Test
