@@ -110,11 +110,13 @@ Two `kind` of config files are supported today :
         "properties": ["name"],
         "name": "Person"
       }
-    ],
-    "uniqueness": [
+    ]
+  },
+  "constraints": {
+    "unique": [
       {
-        "label": "Person",
-        "property": "name"
+        "label": "Movie",
+        "property": "title"
       }
     ]
   },
