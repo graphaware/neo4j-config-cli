@@ -1,6 +1,5 @@
 [![GitHub license](https://img.shields.io/github/license/graphaware/neo4j-config-cli)](https://github.com/graphaware/neo4j-config-cli/blob/main/LICENSE.txt)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/graphaware/neo4j-config-cli?logo=github&sort=semver)](https://github.com/graphaware/neo4j-config-cli/releases/latest)
-[![GitHub All Releases](https://img.shields.io/github/downloads/graphaware/neo4j-config-cli/total?logo=github)](https://github.com/graphaware/neo4j-config-cli/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/graphaware/neo4j-config-cli?logo=docker)](https://hub.docker.com/r/graphaware/neo4j-config-cli)
 
 # neo4j-config-cli
