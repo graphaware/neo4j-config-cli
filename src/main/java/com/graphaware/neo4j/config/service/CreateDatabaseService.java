@@ -22,6 +22,7 @@ public class CreateDatabaseService {
     public void createDatabase(Database database) {
         createDatabase(database.getName(), database.isDropIfExists());
         createIndexes(database);
+        createConstraints(database);
     }
 
     public void createDatabase(String name, boolean dropIfExists) {
@@ -40,6 +41,14 @@ public class CreateDatabaseService {
         if (null != database.getIndexes()) {
             database.getIndexes().getFulltext().forEach(fullTextIndex -> {
                 new CreateFullTextIndex(driver, fullTextIndex).createFullTextIndexOnDatabase(database.getName());
+            });
+        }
+    }
+
+    private void createConstraints(Database database) {
+        if (null != database.getConstraints()) {
+            database.getConstraints().getUnique().forEach(uniqueConstraint -> {
+                new CreateUniqueConstraint(driver, uniqueConstraint).createUniqueConstraintOnDatabase(database.getName());
             });
         }
     }

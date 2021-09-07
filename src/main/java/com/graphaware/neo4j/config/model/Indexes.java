@@ -12,6 +12,4 @@ import java.util.List;
 public class Indexes {
 
     private List<FullTextIndex> fulltext = new ArrayList<>();
-
-    private List<UniquenessIndex> uniqueness = new ArrayList<>();
 }

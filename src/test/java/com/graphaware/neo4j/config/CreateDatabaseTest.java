@@ -2,6 +2,7 @@ package com.graphaware.neo4j.config;
 
 import com.graphaware.neo4j.config.model.Database;
 import com.graphaware.neo4j.config.model.Indexes;
+import com.graphaware.neo4j.config.model.rbac.Constraints;
 import com.graphaware.neo4j.config.service.CreateDatabaseService;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Session;
@@ -12,7 +13,7 @@ import java.util.List;
 public class CreateDatabaseTest extends Neo4jIntegrationBase {
 
     private Database database(String name, boolean dropIfExists) {
-        return new Database(name, dropIfExists, new Indexes(), List.of());
+        return new Database(name, dropIfExists, new Indexes(), new Constraints(), List.of());
     }
 
     @Test

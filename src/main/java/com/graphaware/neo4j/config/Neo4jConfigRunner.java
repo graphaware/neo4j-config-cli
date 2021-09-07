@@ -67,8 +67,8 @@ public class Neo4jConfigRunner implements CommandLineRunner, ExitCodeGenerator {
             try {
                 graphDatabaseImport.importFile(f, seeds);
             } catch (Exception e) {
-                e.printStackTrace();
                 LOG.error(e.getMessage());
+                e.printStackTrace();
             }
         });
         Thread.sleep(1000);

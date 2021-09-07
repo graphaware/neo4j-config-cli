@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data @NoArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Privilege {
 
     private String graph;

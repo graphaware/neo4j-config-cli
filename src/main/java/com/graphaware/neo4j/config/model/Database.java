@@ -1,6 +1,7 @@
 package com.graphaware.neo4j.config.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.graphaware.neo4j.config.model.rbac.Constraints;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,8 @@ public class Database {
     private boolean dropIfExists;
 
     private Indexes indexes = new Indexes();
+
+    private Constraints constraints = new Constraints();
 
     private List<String> seeds = new ArrayList<>();
 }

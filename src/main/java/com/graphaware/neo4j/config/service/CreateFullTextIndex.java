@@ -1,6 +1,7 @@
 package com.graphaware.neo4j.config.service;
 
 import com.graphaware.neo4j.config.model.FullTextIndex;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class CreateFullTextIndex {
 
     private final Driver driver;
@@ -28,6 +30,8 @@ public class CreateFullTextIndex {
         String propsString = StringUtils.join(properties, ",");
         String indexName = fullTextIndex.getName() != null ? fullTextIndex.getName() : "fulltext_" + StringUtils.join(Stream.concat(fullTextIndex.getLabels().stream(), fullTextIndex.getProperties().stream()).collect(Collectors.toList()), "_").toLowerCase();
         String q = String.format("CREATE FULLTEXT INDEX %s IF NOT EXISTS FOR (n:%s) ON EACH [%s]", indexName, labels, propsString);
+        log.debug("Query : {}", q);
+        log.info("Creating fulltext index {}", indexName);
 
         try (Session session = driver.session(SessionConfig.forDatabase(databaseName))) {
             session.run(q);

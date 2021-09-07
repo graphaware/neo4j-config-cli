@@ -25,12 +25,12 @@ import com.graphaware.neo4j.config.model.rbac.Role;
 import com.graphaware.neo4j.config.model.rbac.Rule;
 import com.graphaware.neo4j.config.model.rbac.RuleAccess;
 import com.graphaware.neo4j.config.service.CreateDatabaseService;
-import com.graphaware.neo4j.config.service.CreateFullTextIndex;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -42,6 +42,9 @@ import java.util.Map;
 
 @Component
 public class GraphDatabaseImport {
+
+    @Value("${import.waiting.timeout}")
+    private int importWaitingTimeout;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final Logger LOG = LoggerFactory.getLogger(GraphDatabaseImport.class);
@@ -143,24 +146,28 @@ public class GraphDatabaseImport {
     }
 
     private void importSeed(String dbname, String seed, Map<String, String> seeds) {
+        if (!seeds.containsKey(seed)) {
+            LOG.error("Seed {} for database {} is not present", seed, dbname);
+            return;
+        }
         List<String> lines = Arrays.asList(seeds.get(seed).split(";"));
         try (Session session = driver.session(SessionConfig.forDatabase(dbname))) {
-            lines.forEach(l -> {
-                session.run(l);
-            });
+            lines.forEach(session::run);
         }
     }
 
     public void waitUntilStarted() throws Exception {
         LOG.info("Detecting neo4j server availability");
-        for (int i = 0; i < 10; ++i) {
+        long begin = System.currentTimeMillis();
+        boolean available = false;
+        do {
             try (Session session = driver.session(sessionConfig())) {
                 session.run("CALL db.ping()");
+                available = true;
             } catch (Exception e) {
-                LOG.error("Neo4j server not available, waiting for 5 seconds...");
-                Thread.sleep(5000);
+                LOG.error("Neo4j server not yet available, waiting for 2 seconds...");
+                Thread.sleep(2000);
             }
-        }
+        } while (((System.currentTimeMillis() - begin) < importWaitingTimeout) && !available);
     }
-
 }
