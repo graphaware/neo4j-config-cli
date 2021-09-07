@@ -1,7 +1,8 @@
 {
   "kind": "Database",
-  "name": "movies",
-  "dropIfExists": "true",
+  "name": "neo4j",
+  "dropIfExists": false,
+  "skipCreate": true,
   "indexes": {
     "fulltext" : [
       {

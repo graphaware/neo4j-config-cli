@@ -23,7 +23,7 @@ services:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
   neo4j-config-cli:
-    image: graphaware/neo4j-config-cli:1.0.0-SNAPSHOT
+    image: graphaware/neo4j-config-cli:1.1.0-SNAPSHOT
     environment:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=password
@@ -61,7 +61,7 @@ neo4j-config-cli_1  |   '  |____| .__|_| |_|_| |_\__, | / / / /
 neo4j-config-cli_1  |  =========|_|==============|___/=/_/_/_/
 neo4j-config-cli_1  |  :: Spring Boot ::                (v2.5.4)
 neo4j-config-cli_1  |
-neo4j-config-cli_1  | 2021-09-07 08:02:40.342  INFO 1 --- [main] c.g.n.config.Neo4jConfigCliApplication   : Starting Neo4jConfigCliApplication v1.0.0-SNAPSHOT using Java 11.0.11 on 4daf472cb393 with PID 1 (/opt/app.jar started by appuser in /)
+neo4j-config-cli_1  | 2021-09-07 08:02:40.342  INFO 1 --- [main] c.g.n.config.Neo4jConfigCliApplication   : Starting Neo4jConfigCliApplication v1.1.0-SNAPSHOT using Java 11.0.11 on 4daf472cb393 with PID 1 (/opt/app.jar started by appuser in /)
 neo4j-config-cli_1  | 2021-09-07 08:02:40.344  INFO 1 --- [main] c.g.n.config.Neo4jConfigCliApplication   : No active profile set, falling back to default profiles: default
 neo4j-config-cli_1  | 2021-09-07 08:02:40.975  INFO 1 --- [main] org.neo4j.driver.Driver                  : Direct driver instance 841262455 created for server address neo4j:7687
 neo4j-config-cli_1  | 2021-09-07 08:02:41.160  INFO 1 --- [main] c.g.n.config.Neo4jConfigCliApplication   : Started Neo4jConfigCliApplication in 1.29 seconds (JVM running for 1.677)
@@ -102,7 +102,8 @@ Two `kind` of config files are supported today :
 {
   "kind": "Database",
   "name": "movies",
-  "dropIfExists": "true",
+  "dropIfExists": true,
+  "skipCreate": false,
   "indexes": {
     "fulltext" : [
       {
@@ -110,11 +111,13 @@ Two `kind` of config files are supported today :
         "properties": ["name"],
         "name": "Person"
       }
-    ],
-    "uniqueness": [
+    ]
+  },
+  "constraints": {
+    "unique": [
       {
-        "label": "Person",
-        "property": "name"
+        "label": "Movie",
+        "property": "title"
       }
     ]
   },
@@ -155,6 +158,24 @@ Two `kind` of config files are supported today :
   ]
 }
 ```
+
+---
+
+## Neo4j Aura
+
+The command `CREATE DATABASE` is not available on Neo4j aura, you thus have to skip the step where this tool will 
+execute that command by specifying `skipCreate = true` : 
+
+```json
+{
+  "kind": "Database",
+  "name": "neo4j",
+  "skipCreate": true
+}
+```
+
+A full working example with Aura is available [here](./examples/aura) after inserting your Neo4j Aura credentials in 
+the docker-compose file.
 
 ---
 
