@@ -17,6 +17,8 @@ public class Database {
 
     private boolean dropIfExists;
 
+    private boolean skipCreate;
+
     private Indexes indexes = new Indexes();
 
     private Constraints constraints = new Constraints();
