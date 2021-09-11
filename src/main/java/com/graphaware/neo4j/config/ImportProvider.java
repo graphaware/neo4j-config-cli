@@ -17,17 +17,21 @@
 
 package com.graphaware.neo4j.config;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Component
+@Slf4j
 public class ImportProvider {
 
     private final ResourceLoader resourceLoader;
@@ -37,6 +41,11 @@ public class ImportProvider {
     }
 
     public Collection<File> getImportFiles(String path) throws Exception {
+
+        if (path.startsWith("http")) {
+            path = transformFromUrl(path);
+        }
+
         if (!ResourceUtils.isUrl(path)) {
             path = "file:" + path;
         }
@@ -57,6 +66,18 @@ public class ImportProvider {
 
         return Optional.ofNullable(files).map(f -> Arrays.stream(f).filter(File::isFile).collect(Collectors.toList()))
                 .orElse(Collections.emptyList());
+    }
+
+    private String transformFromUrl(String url) throws Exception {
+        URL u = new URL(url);
+        String tempDir = System.getProperty("java.io.tmpdir") + "/" + "neo4jconfig";
+        String path = tempDir + "/" + System.currentTimeMillis() + ".json";
+
+        File f = new File(path);
+        log.info("copying file from {} copied to {}", url, path);
+        FileUtils.copyURLToFile(u, f);
+
+        return tempDir;
     }
 
 }

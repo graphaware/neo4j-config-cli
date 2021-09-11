@@ -25,6 +25,7 @@ import com.graphaware.neo4j.config.model.rbac.Role;
 import com.graphaware.neo4j.config.model.rbac.Rule;
 import com.graphaware.neo4j.config.model.rbac.RuleAccess;
 import com.graphaware.neo4j.config.service.CreateDatabaseService;
+import org.apache.commons.io.FileUtils;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
@@ -34,11 +35,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GraphDatabaseImport {
@@ -66,6 +67,8 @@ public class GraphDatabaseImport {
         Map<String, Object> config = MAPPER.readValue(s, new TypeReference<>() {});
         if (config.get("kind").equals("Database")) {
             Database database = MAPPER.convertValue(config, Database.class);
+            Map<String, String> remoteSeeds = getRemoteSeeds(database);
+            seeds.putAll(remoteSeeds);
             importDatabase(database);
             if (!database.getSeeds().isEmpty()) {
                 for (String se : database.getSeeds()) {
@@ -172,5 +175,20 @@ public class GraphDatabaseImport {
                 Thread.sleep(2000);
             }
         } while (((System.currentTimeMillis() - begin) < importWaitingTimeout) && !available);
+    }
+
+    private Map<String, String> getRemoteSeeds(Database database) {
+        Map<String, String> seeds = new HashMap<>();
+        database.getSeeds().forEach(s -> {
+            if (s.startsWith("http")) {
+                try {
+                    seeds.put(s, new Scanner(new URL(s).openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next());
+                } catch (Exception e) {
+                    LOG.error(e.getMessage());
+                }
+            }
+        });
+
+        return seeds;
     }
 }
