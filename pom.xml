@@ -12,7 +12,7 @@
 
 	<groupId>com.graphaware</groupId>
 	<artifactId>neo4j-config-cli</artifactId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 
 	<organization>
 		<name>Graph Aware Limited</name>
@@ -69,8 +69,13 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
+		</dependency>
 
-<!--		Test dependencies -->
+		<!--		Test dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
