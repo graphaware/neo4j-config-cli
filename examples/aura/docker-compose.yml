@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   neo4j-config-cli:
-    image: graphaware/neo4j-config-cli:1.1.0
+    image: graphaware/neo4j-config-cli:1.2.0
     environment:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=r3plac3withpassw)rd
