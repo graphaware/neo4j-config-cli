@@ -152,7 +152,10 @@ public class GraphDatabaseImport {
         }
         List<String> lines = Arrays.asList(seeds.get(seed).split(";"));
         try (Session session = driver.session(SessionConfig.forDatabase(dbname))) {
-            lines.forEach(session::run);
+            lines
+                    .stream()
+                    .filter(l -> !l.trim().equals(""))
+                    .forEach(session::run);
         }
     }
 
