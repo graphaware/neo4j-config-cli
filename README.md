@@ -204,6 +204,17 @@ services:
       - IMPORT_PATH=https://gist.githubusercontent.com/ikwattro/f99c1ed085673065fcb4e850526ccd49/raw/35f077b71e3f7a9fd95b0288cf6d622eea3d6501/db-demo.json
 ```
 
+## Seeding only an existing database
+
+```shell
+docker run --rm -it \
+    -e NEO4J_URI=neo4j+s://18894d85.databases.neo4j.io \
+    -e NEO4J_PASSWORD=tT3h3ieK4sw-MATaEaimFFHY9YqkgYNo9WNYcEBqMZ4 \
+    -e seed-only=true \
+    -e seed-url=https://bit.ly/2XnJzFn \
+    graphaware/neo4j-config-cli:1.3.0
+```
+
 ## Licence
 
 Refer to the `LICENSE.txt` file shipped in this repository
