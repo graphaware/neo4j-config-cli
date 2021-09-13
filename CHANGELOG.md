@@ -1,3 +1,7 @@
+## 1.3.0
+
+- Seed only command
+
 ## 1.2.0
 
 - Added support for remote urls for `IMPORT_PATH`
