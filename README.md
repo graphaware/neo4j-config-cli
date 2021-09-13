@@ -23,7 +23,7 @@ services:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
   neo4j-config-cli:
-    image: graphaware/neo4j-config-cli:1.1.0-SNAPSHOT
+    image: graphaware/neo4j-config-cli:1.2.0
     environment:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=password
@@ -178,6 +178,42 @@ A full working example with Aura is available [here](./examples/aura) after inse
 the docker-compose file.
 
 ---
+
+## Importing from remote files
+
+You can let your config files on the web, for eg as a `Github Gist` : https://gist.github.com/ikwattro/f99c1ed085673065fcb4e850526ccd49
+
+You will need to specify the raw versions of it, for eg :
+
+```yaml
+version: '3.7'
+services:
+  neo4j:
+    image: neo4j:4.3.3-enterprise
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
+  neo4j-config-cli:
+    image: graphaware/neo4j-config-cli:1.2.0
+    environment:
+      - NEO4J_PASSWORD=password
+      - NEO4J_URI=bolt://neo4j:7687
+      - IMPORT_PATH=https://gist.githubusercontent.com/ikwattro/f99c1ed085673065fcb4e850526ccd49/raw/35f077b71e3f7a9fd95b0288cf6d622eea3d6501/db-demo.json
+```
+
+## Seeding only an existing database
+
+```shell
+docker run --rm -it \
+    -e NEO4J_URI=neo4j+s://18894d85.databases.neo4j.io \
+    -e NEO4J_PASSWORD=tT3h3ieK4sw-MATaEaimFFHY9YqkgYNo9WNYcEBqMZ4 \
+    -e seed-only=true \
+    -e seed-url=https://bit.ly/2XnJzFn \
+    graphaware/neo4j-config-cli:1.3.0
+```
 
 ## Licence
 

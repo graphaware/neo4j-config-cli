@@ -25,7 +25,7 @@ import com.graphaware.neo4j.config.model.rbac.Role;
 import com.graphaware.neo4j.config.model.rbac.Rule;
 import com.graphaware.neo4j.config.model.rbac.RuleAccess;
 import com.graphaware.neo4j.config.service.CreateDatabaseService;
-import org.apache.commons.io.FileUtils;
+import com.graphaware.neo4j.config.util.ConfigUtils;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
@@ -35,8 +35,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -162,6 +160,18 @@ public class GraphDatabaseImport {
         }
     }
 
+    private void importSeed(String dbname, Map<String, String> seeds) {
+        for (String s : seeds.values()) {
+            List<String> lines = Arrays.asList(s.split(";"));
+            try (Session session = driver.session(SessionConfig.forDatabase(dbname))) {
+                lines
+                        .stream()
+                        .filter(l -> !l.trim().equals(""))
+                        .forEach(session::run);
+            }
+        }
+    }
+
     public void waitUntilStarted() throws Exception {
         LOG.info("Detecting neo4j server availability");
         long begin = System.currentTimeMillis();
@@ -182,7 +192,7 @@ public class GraphDatabaseImport {
         database.getSeeds().forEach(s -> {
             if (s.startsWith("http")) {
                 try {
-                    seeds.put(s, new Scanner(new URL(s).openStream(), StandardCharsets.UTF_8).useDelimiter("\\A").next());
+                    seeds.put(s, ConfigUtils.URLToString(s));
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
                 }
@@ -190,5 +200,9 @@ public class GraphDatabaseImport {
         });
 
         return seeds;
+    }
+
+    public void seedDatabase(String database, Map<String, String> seeds) {
+        importSeed(database, seeds);
     }
 }
