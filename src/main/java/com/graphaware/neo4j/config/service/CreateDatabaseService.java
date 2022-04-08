@@ -77,7 +77,9 @@ public class CreateDatabaseService {
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
             do {
                 List<Record> records = session.run(String.format("SHOW DATABASE `%s`", databaseName)).list();
-                online = records.size() > 0 && records.stream().allMatch(r -> "online".equals(r.asMap().get("currentStatus")));
+                online = records.size() > 0
+                        && records.stream().allMatch(r -> "online".equals(r.asMap().get("currentStatus")))
+                        && records.stream().anyMatch(r -> "leader".equals(r.asMap().get("role")));
                 inTimeWindow = System.currentTimeMillis() < (startTime + 10_000);
             } while (!online && inTimeWindow);
         }
