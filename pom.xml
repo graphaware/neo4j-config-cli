@@ -40,8 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j.driver</groupId>
-			<artifactId>neo4j-java-driver-spring-boot-starter</artifactId>
-			<version>4.2.7.0</version>
+			<artifactId>neo4j-java-driver</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
