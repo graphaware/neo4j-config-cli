@@ -2,11 +2,14 @@ package com.graphaware.neo4j.config.service;
 
 import com.graphaware.neo4j.config.model.Database;
 import org.neo4j.driver.Driver;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CreateDatabaseService {
@@ -40,6 +43,7 @@ public class CreateDatabaseService {
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
             session.run(query);
         }
+        waitDatabaseIsOnline(name);
     }
 
     private void createIndexes(Database database) {
@@ -63,6 +67,19 @@ public class CreateDatabaseService {
         LOG.info("Dropping database {}", name);
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
             session.run(query);
+        }
+    }
+
+    private void waitDatabaseIsOnline(String databaseName) {
+        long startTime = System.currentTimeMillis();
+        boolean online;
+        boolean inTimeWindow;
+        try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
+            do {
+                List<Record> records = session.run(String.format("SHOW DATABASE `%s`", databaseName)).list();
+                online = records.size() > 0 && records.stream().allMatch(r -> "online".equals(r.asMap().get("currentStatus")));
+                inTimeWindow = System.currentTimeMillis() < (startTime + 10_000);
+            } while (!online && inTimeWindow);
         }
     }
 }
