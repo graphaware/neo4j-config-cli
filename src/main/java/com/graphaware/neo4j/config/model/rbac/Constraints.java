@@ -17,17 +17,12 @@
 
 package com.graphaware.neo4j.config.model.rbac;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Constraints {
 
-    private List<UniqueConstraint> unique = new ArrayList<>();
+public record Constraints(List<UniqueConstraint> uniqueConstraints) {
+
+    public Constraints {
+        uniqueConstraints = List.copyOf(uniqueConstraints);
+    }
 }

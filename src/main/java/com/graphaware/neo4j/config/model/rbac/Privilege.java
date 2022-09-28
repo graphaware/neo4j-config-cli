@@ -1,17 +1,10 @@
 package com.graphaware.neo4j.config.model.rbac;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Privilege {
+public record Privilege(String graph, boolean access, List<Rule> rules) {
 
-    private String graph;
-    private boolean access;
-    private List<Rule> rules;
+    public Privilege {
+        rules = List.copyOf(rules);
+    }
 }

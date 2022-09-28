@@ -18,13 +18,15 @@
 package com.graphaware.neo4j.config.service;
 
 import com.graphaware.neo4j.config.model.rbac.UniqueConstraint;
-import lombok.extern.slf4j.Slf4j;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class CreateUniqueConstraint {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CreateUniqueConstraint.class);
 
     private final Driver driver;
     private final UniqueConstraint uniqueConstraint;
@@ -35,18 +37,18 @@ public class CreateUniqueConstraint {
     }
 
     public void createUniqueConstraintOnDatabase(String databaseName) {
-        String constraintName = uniqueConstraint.getName() != null
-                ? uniqueConstraint.getName()
-                : String.format("unique_%s_%s", uniqueConstraint.getLabel(), uniqueConstraint.getProperty()).toLowerCase();
+        String constraintName = uniqueConstraint.name() != null
+                ? uniqueConstraint.name()
+                : String.format("unique_%s_%s", uniqueConstraint.label(), uniqueConstraint.property()).toLowerCase();
         String q = String.format(
                 "CREATE CONSTRAINT %s IF NOT EXISTS ON (n:`%s`) ASSERT n.`%s` IS UNIQUE",
                 constraintName,
-                uniqueConstraint.getLabel(),
-                uniqueConstraint.getProperty()
+                uniqueConstraint.label(),
+                uniqueConstraint.property()
         );
 
-        log.debug("Query : {}", q);
-        log.info("Creating unique constraint {}", constraintName);
+        LOG.debug("Query : {}", q);
+        LOG.info("Creating unique constraint {}", constraintName);
         try (Session session = driver.session(SessionConfig.forDatabase(databaseName))) {
             session.run(q);
         }

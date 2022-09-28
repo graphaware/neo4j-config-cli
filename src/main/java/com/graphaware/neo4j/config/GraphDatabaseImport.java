@@ -37,7 +37,10 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class GraphDatabaseImport {
@@ -68,9 +71,9 @@ public class GraphDatabaseImport {
             Map<String, String> remoteSeeds = getRemoteSeeds(database);
             seeds.putAll(remoteSeeds);
             importDatabase(database);
-            if (!database.getSeeds().isEmpty()) {
-                for (String se : database.getSeeds()) {
-                    importSeed(database.getName(), se, seeds);
+            if (!database.seeds().isEmpty()) {
+                for (String se : database.seeds()) {
+                    importSeed(database.name(), se, seeds);
                 }
             }
         }
@@ -92,52 +95,52 @@ public class GraphDatabaseImport {
         List<String> matchRead = List.of("match", "read");
         try (Session session = driver.session(sessionConfig())) {
 
-            if (role.isDropIfExists()) {
-                session.run(String.format("DROP ROLE %s IF EXISTS", role.getName()));
+            if (role.dropIfExists()) {
+                session.run(String.format("DROP ROLE %s IF EXISTS", role.name()));
             }
 
-            String q = String.format( "CREATE ROLE %s IF NOT EXISTS", role.getName());
+            String q = String.format( "CREATE ROLE %s IF NOT EXISTS", role.name());
             session.run(q);
 
-            for (Privilege privilege : role.getPrivileges()) {
+            for (Privilege privilege : role.privileges()) {
 
-                if (privilege.isAccess()) {
-                    String aq = String.format("GRANT ACCESS ON DATABASE %s TO %s", privilege.getGraph(), role.getName());
+                if (privilege.access()) {
+                    String aq = String.format("GRANT ACCESS ON DATABASE %s TO %s", privilege.graph(), role.name());
                     session.run(aq);
                 }
 
-                for (Rule rule : privilege.getRules()) {
-                    if (matchRead.contains(rule.getAction())) {
-                        String properties = rule.getResource().equals("all_properties")
+                for (Rule rule : privilege.rules()) {
+                    if (matchRead.contains(rule.action())) {
+                        String properties = rule.resource().equals("all_properties")
                                 ? "*"
-                                : rule.getResource();
+                                : rule.resource();
 
-                        String op = rule.getAccess().equals(RuleAccess.GRANTED) ? "GRANT" : "DENY";
-                        String target = rule.getTarget().equals("node") ? "NODES" : "RELATIONSHIPS";
-                        String action = rule.getAction().toUpperCase();
+                        String op = rule.access().equals(RuleAccess.GRANTED) ? "GRANT" : "DENY";
+                        String target = rule.target().equals("node") ? "NODES" : "RELATIONSHIPS";
+                        String action = rule.target().toUpperCase();
 
                         String oq = String.format("%s %s {%s} ON GRAPH %s %s %s TO %s",
                                 op,
                                 action,
                                 properties,
-                                privilege.getGraph(),
+                                privilege.graph(),
                                 target,
-                                rule.getLabels(),
-                                role.getName()
+                                rule.labels(),
+                                role.name()
                                 );
                         session.run(oq);
                     } else {
-                        String op = rule.getAccess().equals(RuleAccess.GRANTED) ? "GRANT" : "DENY";
-                        String target = rule.getTarget().equals("node") ? "NODES" : "RELATIONSHIPS";
-                        String action = rule.getAction().toUpperCase();
+                        String op = rule.access().equals(RuleAccess.GRANTED) ? "GRANT" : "DENY";
+                        String target = rule.access().name().equals("node") ? "NODES" : "RELATIONSHIPS";
+                        String action = rule.access().name().toUpperCase();
 
                         String oq = String.format("%s %s ON GRAPH %s %s %s TO %s",
                                 op,
                                 action,
-                                privilege.getGraph(),
+                                privilege.graph(),
                                 target,
-                                rule.getLabels(),
-                                role.getName()
+                                rule.labels(),
+                                role.name()
                         );
                         session.run(oq);
                     }
@@ -189,7 +192,7 @@ public class GraphDatabaseImport {
 
     private Map<String, String> getRemoteSeeds(Database database) {
         Map<String, String> seeds = new HashMap<>();
-        database.getSeeds().forEach(s -> {
+        database.seeds().forEach(s -> {
             if (s.startsWith("http")) {
                 try {
                     seeds.put(s, ConfigUtils.URLToString(s));

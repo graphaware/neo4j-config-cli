@@ -1,15 +1,10 @@
 package com.graphaware.neo4j.config.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor @NoArgsConstructor
-public class Indexes {
+public record Indexes(List<FullTextIndex> fullTextIndices) {
 
-    private List<FullTextIndex> fulltext = new ArrayList<>();
+    public Indexes {
+        fullTextIndices = List.copyOf(fullTextIndices);
+    }
 }

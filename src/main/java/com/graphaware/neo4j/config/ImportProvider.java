@@ -17,8 +17,9 @@
 
 package com.graphaware.neo4j.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -31,8 +32,9 @@ import java.util.stream.Collectors;
 
 
 @Component
-@Slf4j
 public class ImportProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ImportProvider.class);
 
     private final ResourceLoader resourceLoader;
 
@@ -74,7 +76,7 @@ public class ImportProvider {
         String path = tempDir + "/" + System.currentTimeMillis() + ".json";
 
         File f = new File(path);
-        log.info("copying file from {} copied to {}", url, path);
+        LOG.info("copying file from {} copied to {}", url, path);
         FileUtils.copyURLToFile(u, f);
 
         return tempDir;

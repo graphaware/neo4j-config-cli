@@ -1,17 +1,11 @@
 package com.graphaware.neo4j.config.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class FullTextIndex {
+public record FullTextIndex(String name, List<String> labels, List<String> properties) {
 
-    private String name;
-    private List<String> labels;
-    private List<String> properties;
+    public FullTextIndex {
+        labels = List.copyOf(labels);
+        properties = List.copyOf(properties);
+    }
 }
