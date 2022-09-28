@@ -17,16 +17,4 @@
 
 package com.graphaware.neo4j.config.model.rbac;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class UniqueConstraint {
-
-    private String label;
-    private String property;
-    private String name;
-}
+public record UniqueConstraint(String label, String property, String name) {}
