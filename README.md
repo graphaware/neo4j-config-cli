@@ -15,7 +15,7 @@ The following `docker-compose.yml` :
 version: '3.7'
 services:
   neo4j:
-    image: neo4j:4.3.3-enterprise
+    image: neo4j:4.4.11-enterprise
     ports:
       - "7474:7474"
       - "7687:7687"

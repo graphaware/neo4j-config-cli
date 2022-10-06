@@ -13,16 +13,16 @@ import java.util.List;
 public class CreateDatabaseTest extends Neo4jIntegrationBase {
 
     private Database database(String name, boolean dropIfExists) {
-        return new Database(name, dropIfExists, false, new Indexes(), new Constraints(), List.of());
+        return new Database(name, dropIfExists, false, new Indexes(List.of()), new Constraints(List.of()), List.of());
     }
 
     @Test
     public void create_database() {
         CreateDatabaseService createDatabaseService = new CreateDatabaseService(driver);
         Database database = database("test", true);
-        neo4jAsserts.databaseNotExists(database.getName());
+        neo4jAsserts.databaseNotExists(database.name());
         createDatabaseService.createDatabase(database);
-        neo4jAsserts.databaseExists(database.getName());
+        neo4jAsserts.databaseExists(database.name());
     }
 
     @Test
@@ -30,10 +30,10 @@ public class CreateDatabaseTest extends Neo4jIntegrationBase {
         CreateDatabaseService createDatabaseService = new CreateDatabaseService(driver);
         Database database = database("droptest", true);
         createDatabaseService.createDatabase(database);
-        insertSomeData(database.getName());
-        neo4jAsserts.databaseNotEmpty(database.getName());
+        insertSomeData(database.name());
+        neo4jAsserts.databaseNotEmpty(database.name());
         createDatabaseService.createDatabase(database);
-        neo4jAsserts.databaseEmpty(database.getName());
+        neo4jAsserts.databaseEmpty(database.name());
     }
 
     private void insertSomeData(String databaseName) {
