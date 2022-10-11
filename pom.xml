@@ -12,7 +12,7 @@
 
 	<groupId>com.graphaware</groupId>
 	<artifactId>neo4j-config-cli</artifactId>
-	<version>1.5.1-upgrade-deps-SNAPSHOT</version>
+	<version>1.5.1-SNAPSHOT</version>
 
 	<organization>
 		<name>Graph Aware Limited</name>
