@@ -117,7 +117,8 @@ Two `kind` of config files are supported today :
     "unique": [
       {
         "label": "Movie",
-        "property": "title"
+        "property": "title",
+        "type": "UNIQUE"
       }
     ]
   },

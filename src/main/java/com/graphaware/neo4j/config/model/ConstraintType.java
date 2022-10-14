@@ -15,16 +15,10 @@
  *
  */
 
-package com.graphaware.neo4j.config.model.rbac;
+package com.graphaware.neo4j.config.model;
 
-import com.graphaware.neo4j.config.model.UniqueConstraint;
-
-import java.util.List;
-
-
-public record Constraints(List<UniqueConstraint> uniqueConstraints) {
-
-    public Constraints {
-        uniqueConstraints = List.copyOf(uniqueConstraints);
-    }
+public enum ConstraintType {
+    UNIQUE,
+    NOT_NULL,
+    NODE_KEY
 }
