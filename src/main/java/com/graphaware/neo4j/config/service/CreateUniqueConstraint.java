@@ -17,7 +17,8 @@
 
 package com.graphaware.neo4j.config.service;
 
-import com.graphaware.neo4j.config.model.rbac.UniqueConstraint;
+import com.graphaware.neo4j.config.model.ConstraintType;
+import com.graphaware.neo4j.config.model.UniqueConstraint;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
@@ -41,10 +42,11 @@ public class CreateUniqueConstraint {
                 ? uniqueConstraint.name()
                 : String.format("unique_%s_%s", uniqueConstraint.label(), uniqueConstraint.property()).toLowerCase();
         String q = String.format(
-                "CREATE CONSTRAINT %s IF NOT EXISTS ON (n:`%s`) ASSERT n.`%s` IS UNIQUE",
+                "CREATE CONSTRAINT %s IF NOT EXISTS FOR (n:`%s`) REQUIRE n.`%s` %s",
                 constraintName,
                 uniqueConstraint.label(),
-                uniqueConstraint.property()
+                uniqueConstraint.property(),
+                toConstraintTypeQueryString(uniqueConstraint.type())
         );
 
         LOG.debug("Query : {}", q);
@@ -52,5 +54,9 @@ public class CreateUniqueConstraint {
         try (Session session = driver.session(SessionConfig.forDatabase(databaseName))) {
             session.run(q);
         }
+    }
+
+    private String toConstraintTypeQueryString(ConstraintType constraintType) {
+        return constraintType.name().toUpperCase().replace("_", " ");
     }
 }

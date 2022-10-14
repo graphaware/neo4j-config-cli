@@ -16,7 +16,8 @@
     "unique": [
       {
         "label": "Movie",
-        "property": "title"
+        "property": "title",
+        "type": "UNIQUE"
       }
     ]
   },
