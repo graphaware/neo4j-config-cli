@@ -15,6 +15,6 @@
  *
  */
 
-package com.graphaware.neo4j.config.model.rbac;
+package com.graphaware.neo4j.config.model;
 
-public record UniqueConstraint(String label, String property, String name) {}
+public record UniqueConstraint(String label, String property, String name, ConstraintType type) {}
