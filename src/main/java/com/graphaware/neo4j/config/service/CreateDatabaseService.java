@@ -48,7 +48,7 @@ public class CreateDatabaseService {
 
     private void createIndexes(Database database) {
         if (null != database.indexes()) {
-            database.indexes().fullTextIndices().forEach(fullTextIndex -> {
+            database.indexes().fulltext().forEach(fullTextIndex -> {
                 new CreateFullTextIndex(driver, fullTextIndex).createFullTextIndexOnDatabase(database.name());
             });
         }
