@@ -1,0 +1,1 @@
+CREATE (:Article {url: "https://graphware.com/blog.html", description: "GraphAware blog"});
