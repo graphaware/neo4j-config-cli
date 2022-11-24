@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   neo4j:
-    image: neo4j:4.3.3-enterprise
+    image: neo4j:5.2.0-enterprise
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -9,8 +9,11 @@ services:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
   neo4j-config-cli:
-    image: graphaware/neo4j-config-cli:1.2.0
+    image: graphaware/neo4j-config-cli:1.6.1-SNAPSHOT
     environment:
       - NEO4J_PASSWORD=password
       - NEO4J_URI=bolt://neo4j:7687
-      - IMPORT_PATH=https://gist.githubusercontent.com/ikwattro/f99c1ed085673065fcb4e850526ccd49/raw/35f077b71e3f7a9fd95b0288cf6d622eea3d6501/db-demo.json
+#      - IMPORT_PATH=https://gist.githubusercontent.com/ikwattro/f99c1ed085673065fcb4e850526ccd49/raw/35f077b71e3f7a9fd95b0288cf6d622eea3d6501/db-demo.json
+      - IMPORT_PATH=/import
+    volumes:
+      - "./examples/config:/import"
