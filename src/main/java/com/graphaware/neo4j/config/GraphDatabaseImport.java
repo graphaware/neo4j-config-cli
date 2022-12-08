@@ -132,7 +132,7 @@ public class GraphDatabaseImport {
                     } else {
                         String op = rule.access().equals(RuleAccess.GRANTED) ? "GRANT" : "DENY";
                         String target = rule.access().name().equals("node") ? "NODES" : "RELATIONSHIPS";
-                        String action = rule.access().name().toUpperCase();
+                        String action = rule.action().toUpperCase();
 
                         String oq = String.format("%s %s ON GRAPH %s %s %s TO %s",
                                 op,
