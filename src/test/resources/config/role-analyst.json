@@ -1,0 +1,54 @@
+{
+  "kind": "Role",
+  "name": "analyst",
+  "dropIfExists": true,
+  "privileges": [
+    {
+      "graph": "movies",
+      "access": true,
+      "rules": [
+        {
+          "target": "node",
+          "labels": "Case",
+          "action": "match",
+          "resource": "all_properties",
+          "access": "GRANTED"
+        },
+        {
+          "target": "node",
+          "labels": "Case456",
+          "action": "match",
+          "resource": "all_properties",
+          "access": "DENIED"
+        },
+        {
+          "target": "relationship",
+          "labels": "*",
+          "action": "read",
+          "resource": "*",
+          "access": "GRANTED"
+        },
+        {
+          "target": "relationship",
+          "labels": "*",
+          "action": "traverse",
+          "resource": "*",
+          "access": "GRANTED"
+        }
+      ]
+    },
+    {
+      "graph": "movies",
+      "access": true,
+      "rules": [
+        {
+          "target": "node",
+          "labels": "Movie",
+          "action": "match",
+          "resource": "all_properties",
+          "access": "GRANTED"
+        }
+      ]
+    }
+  ]
+}

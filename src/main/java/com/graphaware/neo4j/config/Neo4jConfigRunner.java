@@ -17,65 +17,55 @@
 
 package com.graphaware.neo4j.config;
 
+import com.graphaware.neo4j.config.properties.ImportConfiguration;
 import com.graphaware.neo4j.config.util.ConfigUtils;
+import com.graphaware.neo4j.config.util.FileCollectionUtils;
+import com.graphaware.neo4j.config.util.FilesToImport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class Neo4jConfigRunner implements CommandLineRunner, ExitCodeGenerator {
 
-    @Value("${import.path}")
-    private String importPath;
 
-    @Value("${seed-only}")
-    private boolean seedOnly;
-
-    @Value("${seed-url:#{null}}")
-    private String seedUrl;
-
-    @Value("${seed-db}")
-    private String seedDb;
 
     private static final int EXIT_CODE = 0;
     private static final Logger LOG = LoggerFactory.getLogger(Neo4jConfigRunner.class);
 
+    private final ImportConfiguration configuration;
+
     private final ImportProvider importProvider;
     private final GraphDatabaseImport graphDatabaseImport;
 
-    public Neo4jConfigRunner(ImportProvider importProvider, GraphDatabaseImport graphDatabaseImport) {
+    public Neo4jConfigRunner(ImportProvider importProvider, GraphDatabaseImport graphDatabaseImport, ImportConfiguration configuration) {
+        this.configuration = configuration;
         this.importProvider = importProvider;
         this.graphDatabaseImport = graphDatabaseImport;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        applyConfiguration();
+    }
+
+    public void applyConfiguration() throws Exception {
         LOG.info("Starting command line application");
-        if (seedOnly) {
-            LOG.info("seed-only mode detected, loading data from {}", seedUrl);
+        if (configuration.isSeedOnly()) {
+            LOG.info("seed-only mode detected, loading data from {}", configuration.getSeedUrl());
             seedOnly();
         } else {
-            Collection<File> fileCollection = importProvider.getImportFiles(importPath);
-            Collection<File> cypherSeeds = fileCollection
-                    .stream()
-                    .filter(f -> f.getName().endsWith(".cypher"))
-                    .collect(Collectors.toList());
-            Map<String, String> seeds = buildSeeds(cypherSeeds);
+            Collection<File> importFiles = importProvider.getImportFiles(configuration.getImportPath());
+            FilesToImport filesToImport = FileCollectionUtils.getFilesToImport(importFiles);
+            Map<String, String> seeds = FileCollectionUtils.buildSeeds(filesToImport.getCypherSeeds());
             graphDatabaseImport.waitUntilStarted();
-            fileCollection
-                    .stream()
-                    .filter(f -> !f.getName().endsWith(".cypher"))
+            filesToImport.getConfigurationFiles()
                     .forEach(f -> {
                         LOG.info("Will import from file {}", f.getPath());
                         try {
@@ -90,43 +80,27 @@ public class Neo4jConfigRunner implements CommandLineRunner, ExitCodeGenerator {
 
     private void seedOnly() throws Exception {
         Map<String, String> seeds;
-        if (null != seedUrl) {
-            seeds = Map.of(seedUrl, ConfigUtils.URLToString(seedUrl));
+        if (null != configuration.getSeedUrl()) {
+            seeds = Map.of(configuration.getSeedUrl(), ConfigUtils.URLToString(configuration.getSeedUrl()));
         } else {
             seeds = getSeedsFromConfigDirectory();
         }
 
-        graphDatabaseImport.seedDatabase(seedDb, seeds);
+        graphDatabaseImport.seedDatabase(configuration.getSeedDb(), seeds);
 
     }
 
     private Map<String, String> getSeedsFromConfigDirectory() throws Exception {
-        Collection<File> fileCollection = importProvider.getImportFiles(importPath);
+        Collection<File> fileCollection = importProvider.getImportFiles(configuration.getImportPath());
         Collection<File> cypherSeeds = fileCollection
                 .stream()
                 .filter(f -> f.getName().endsWith(".cypher"))
-                .collect(Collectors.toList());
-        Map<String, String> seeds = buildSeeds(cypherSeeds);
-
-        return seeds;
+                .toList();
+         return FileCollectionUtils.buildSeeds(fileCollection);
     }
 
     @Override
     public int getExitCode() {
         return EXIT_CODE;
-    }
-
-    private Map<String, String> buildSeeds(Collection<File> files) {
-        Map<String, String> seeds = new HashMap<>();
-        for (File file : files) {
-            try {
-                String s = new String(Files.readAllBytes(Paths.get(file.getPath())));
-                seeds.put(Paths.get(file.getPath()).getFileName().toString(), s);
-            } catch (Exception e) {
-                LOG.error("Could not read cypher seed {}", file.getPath());
-            }
-        }
-
-        return seeds;
     }
 }

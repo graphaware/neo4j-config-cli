@@ -1,0 +1,29 @@
+{
+    "kind": "Database",
+    "name": "reuters",
+    "dropIfExists": "true",
+    "indexes": {
+      "fulltext" : [
+        {
+          "labels": ["Article"],
+          "properties": ["description", "text"],
+          "name": "Article"
+        },
+        {
+            "labels": ["Author"],
+            "properties": ["name"]
+        }
+      ],
+      "uniqueness": [
+        {
+          "label": "Author",
+          "property": "name"
+        },
+        {
+            "label": "Article",
+            "property": "url"
+        }
+      ]
+    },
+    "seeds": ["articles.cypher"]
+  }
