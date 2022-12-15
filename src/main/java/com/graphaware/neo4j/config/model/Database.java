@@ -6,7 +6,7 @@ import com.graphaware.neo4j.config.model.rbac.Constraints;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record Database(String name, boolean dropIfExists, boolean skipIfCreate, Indexes indexes, Constraints constraints, List<String> seeds) {
+public record Database(String name, boolean dropIfExists, boolean skipIfCreate, Indexes indexes, Constraints constraints, List<String> seeds, String seedFromUri) {
 
     public Database {
         seeds = List.copyOf(seeds);

@@ -63,6 +63,16 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
                 var roles = session.run("SHOW ROLES YIELD role RETURN collect(role) AS roles").single().get("roles").asList(ofString());
                 assertThat(roles).asList().contains("ut1");
             }
+
+            try (Session session = driver.session(SessionConfig.forDatabase("world.cup"))) {
+                session.run("CALL db.ping()").consume();
+
+                if (version.startsWith("5")) {
+                    var nodesCount = session.run("MATCH (n) RETURN count(n) AS c").single().get("c").asLong();
+
+                    assertThat(nodesCount).isGreaterThan(0);
+                }
+            }
         }
 
     }

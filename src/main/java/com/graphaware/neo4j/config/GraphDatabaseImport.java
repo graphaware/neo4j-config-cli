@@ -207,6 +207,10 @@ public class GraphDatabaseImport {
         return seeds;
     }
 
+    private static boolean isRemoteSeed(String s) {
+        return s.startsWith("http") || s.startsWith("file://");
+    }
+
     public void seedDatabase(String database, Map<String, String> seeds) {
         importSeed(database, seeds);
     }

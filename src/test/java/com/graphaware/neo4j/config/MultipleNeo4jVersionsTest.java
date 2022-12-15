@@ -52,6 +52,9 @@ public abstract class MultipleNeo4jVersionsTest {
                 .withEnv("NEO4J_ACCEPT_LICENSE_AGREEMENT", "yes")
                 .withEnv(heapSizeSetting(neo4jVersion), HEAP_SIZE)
                 .withReuse(true);
+        if (version.startsWith("5")) {
+            container.withEnv("NEO4J_dbms_databases_seed__from__uri__providers", "URLConnectionSeedProvider");
+        }
         container.start();
 
         return container;
