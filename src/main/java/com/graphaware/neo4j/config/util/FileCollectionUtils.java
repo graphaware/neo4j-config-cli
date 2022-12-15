@@ -37,7 +37,6 @@ public class FileCollectionUtils {
                 .stream()
                 .filter(f -> f.getName().endsWith(".cypher"))
                 .collect(Collectors.toList());
-        Map<String, String> seeds = buildSeeds(cypherSeeds);
         var configFiles = files
                 .stream()
                 .filter(f -> !f.getName().endsWith(".cypher"))
