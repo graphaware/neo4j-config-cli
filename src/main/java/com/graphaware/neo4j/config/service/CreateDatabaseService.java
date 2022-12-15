@@ -23,27 +23,42 @@ public class CreateDatabaseService {
     }
 
     public void createDatabase(Database database) {
-        createDatabase(database.name(), database.dropIfExists(), database.skipIfCreate());
+        createDatabase(database.name(), database.dropIfExists(), database.skipIfCreate(), database.seedFromUri());
         createIndexes(database);
         createConstraints(database);
     }
 
-    public void createDatabase(String name, boolean dropIfExists, boolean skipCreate) {
+    public void createDatabase(String name, boolean dropIfExists, boolean skipCreate, String fromUri) {
         if (skipCreate) {
             LOG.info("Skipping creation of database {}", name);
             return;
         }
+
         if (dropIfExists) {
             dropDatabaseIfExists(name);
         }
 
         String query = String.format("CREATE DATABASE %s IF NOT EXISTS", name);
+
+        if (fromUri != null && isNeo4j5()) {
+            LOG.info("seedFromUri detected, will seed database from {}", fromUri);
+            query = String.format("%s OPTIONS { existingData: \"use\", seedUri: \"%s\"}", query, fromUri);
+        }
+
         LOG.info("Creating database {} ", name);
         LOG.debug("Query : {}", query);
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
             session.run(query);
         }
         waitDatabaseIsOnline(name);
+    }
+
+    private boolean isNeo4j5() {
+        try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
+            var version = session.run("CALL dbms.components() YIELD versions RETURN versions[0] AS version").single().get("version").asString();
+
+            return version.startsWith("5");
+        }
     }
 
     private void createIndexes(Database database) {
