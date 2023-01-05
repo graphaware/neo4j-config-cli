@@ -3,17 +3,21 @@
     "name": "movies",
     "dropIfExists": "true",
     "indexes": {
-      "fulltext" : [
+      "nodes" : [
         {
           "labels": ["Person"],
           "properties": ["name"],
-          "name": "Person"
+          "name": "Person",
+          "type": "FULLTEXT"
         }
       ],
-      "uniqueness": [
+    },
+    "constraints": {
+      "nodes": [
         {
           "label": "Person",
-          "property": "name"
+          "property": "name",
+          "type": "UNIQUE"
         }
       ]
     },

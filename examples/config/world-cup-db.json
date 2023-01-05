@@ -1,0 +1,6 @@
+{
+  "kind": "Database",
+  "name": "world.cup",
+  "dropIfExists": "false",
+  "seedFromUri": "https://downloads.graphaware.com/neo4j-db-seeds/world-cup-2022-neo4j.backup"
+}

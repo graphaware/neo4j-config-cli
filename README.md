@@ -12,10 +12,10 @@ Docker : https://hub.docker.com/repository/docker/graphaware/neo4j-config-cli
 The following `docker-compose.yml` : 
 
 ```yaml
-version: '3.7'
+version: '3'
 services:
   neo4j:
-    image: neo4j:4.4.11-enterprise
+    image: neo4j:4.4.15-enterprise
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -23,7 +23,7 @@ services:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
   neo4j-config-cli:
-    image: graphaware/neo4j-config-cli:1.2.0
+    image: graphaware/neo4j-config-cli:2.0.0
     environment:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=password
@@ -102,22 +102,22 @@ Two `kind` of config files are supported today :
 {
   "kind": "Database",
   "name": "movies",
-  "dropIfExists": true,
-  "skipCreate": false,
+  "dropIfExists": "true",
   "indexes": {
-    "fulltext" : [
+    "nodes" : [
       {
         "labels": ["Person"],
         "properties": ["name"],
-        "name": "Person"
+        "name": "Person",
+        "type": "FULLTEXT"
       }
-    ]
+    ],
   },
   "constraints": {
-    "unique": [
+    "nodes": [
       {
-        "label": "Movie",
-        "property": "title",
+        "label": "Person",
+        "property": "name",
         "type": "UNIQUE"
       }
     ]
@@ -190,7 +190,7 @@ You will need to specify the raw versions of it, for eg :
 version: '3.7'
 services:
   neo4j:
-    image: neo4j:4.3.3-enterprise
+    image: neo4j:4.4.15-enterprise
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -214,6 +214,23 @@ docker run --rm -it \
     -e seed-only=true \
     -e seed-url=https://bit.ly/2XnJzFn \
     graphaware/neo4j-config-cli:1.3.0
+```
+
+## Seeding a database from a Neo4j 5 backup ( seedFromUri )
+
+This feature requires that your Neo4j configuration allows seeding from uri's
+
+```yaml
+- NEO4J_dbms_databases_seed__from__uri__providers=URLConnectionSeedProvider
+```
+
+```json
+{
+  "kind": "Database",
+  "name": "world.cup",
+  "dropIfExists": "false",
+  "seedFromUri": "https://downloads.graphaware.com/neo4j-db-seeds/world-cup-2022-neo4j.backup"
+}
 ```
 
 ## Licence
