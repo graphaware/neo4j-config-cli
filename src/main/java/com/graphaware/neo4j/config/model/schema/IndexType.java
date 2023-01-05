@@ -15,10 +15,11 @@
  *
  */
 
-package com.graphaware.neo4j.config.model;
+package com.graphaware.neo4j.config.model.schema;
 
-public enum ConstraintType {
-    UNIQUE,
-    NOT_NULL,
-    NODE_KEY
+public enum IndexType {
+    FULLTEXT,
+    BTREE,
+    RANGE,
+    TEXT
 }

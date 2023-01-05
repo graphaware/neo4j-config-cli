@@ -1,14 +1,15 @@
 package com.graphaware.neo4j.config.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.graphaware.neo4j.config.model.rbac.Constraints;
+import com.graphaware.neo4j.config.model.schema.Constraints;
 
 import java.util.List;
+import java.util.Optional;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record Database(String name, boolean dropIfExists, boolean skipIfCreate, Indexes indexes, Constraints constraints, List<String> seeds, String seedFromUri) {
 
     public Database {
-        seeds = List.copyOf(seeds);
+        seeds = List.copyOf(Optional.ofNullable(seeds).orElse(List.of()));
     }
 }
