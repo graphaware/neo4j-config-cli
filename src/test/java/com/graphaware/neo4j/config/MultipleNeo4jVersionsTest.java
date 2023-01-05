@@ -34,7 +34,7 @@ public abstract class MultipleNeo4jVersionsTest {
     protected static String HEAP_SIZE = "256M";
 
     public static Stream<String> neo4jVersions() {
-        return Stream.of("4.4.14", "5.2.0");
+        return Stream.of("4.4.14", "5.3.0");
     }
 
     protected static String heapSizeSetting(Neo4jVersion version) {

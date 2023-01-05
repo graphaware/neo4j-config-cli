@@ -3,25 +3,31 @@
     "name": "reuters",
     "dropIfExists": "true",
     "indexes": {
-      "fulltext" : [
+      "nodes" : [
         {
           "labels": ["Article"],
           "properties": ["description", "text"],
-          "name": "Article"
+          "name": "Article",
+          "type": "FULLTEXT"
         },
         {
-            "labels": ["Author"],
-            "properties": ["name"]
+          "labels": ["Author"],
+          "properties": ["name"],
+          "type": "FULLTEXT"
         }
-      ],
-      "uniqueness": [
+      ]
+    },
+    "constraints": {
+      "nodes": [
         {
-          "label": "Author",
-          "property": "name"
+          "labels": ["Author"],
+          "property": "name",
+          "type": "UNIQUE"
         },
         {
-            "label": "Article",
-            "property": "url"
+          "labels": ["Article"],
+          "property": "url",
+          "type": "UNIQUE"
         }
       ]
     },

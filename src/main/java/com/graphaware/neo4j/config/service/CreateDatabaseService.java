@@ -63,16 +63,19 @@ public class CreateDatabaseService {
 
     private void createIndexes(Database database) {
         if (null != database.indexes()) {
-            database.indexes().fulltext().forEach(fullTextIndex -> {
-                new CreateFullTextIndex(driver, fullTextIndex).createFullTextIndexOnDatabase(database.name());
+            database.indexes().nodes().forEach(fullTextIndex -> {
+                new CreateNodeIndex(driver, fullTextIndex).createIndex(database.name());
+            });
+            database.indexes().relationships().forEach(relationshipIndex -> {
+                new CreateRelationshipIndex(driver, relationshipIndex).createIndex(database.name());
             });
         }
     }
 
     private void createConstraints(Database database) {
         if (null != database.constraints()) {
-            database.constraints().uniqueConstraints().forEach(uniqueConstraint -> {
-                new CreateUniqueConstraint(driver, uniqueConstraint).createUniqueConstraintOnDatabase(database.name());
+            database.constraints().nodes().forEach(constraint -> {
+                new CreateNodeConstraint(driver, constraint).createUniqueConstraintOnDatabase(database.name());
             });
         }
     }

@@ -19,6 +19,7 @@ package com.graphaware.neo4j.config;
 
 import com.graphaware.neo4j.config.properties.ImportConfiguration;
 import com.graphaware.neo4j.config.service.CreateDatabaseService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.neo4j.driver.Driver;
@@ -31,6 +32,7 @@ import org.testcontainers.containers.Neo4jContainer;
 import java.io.File;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.neo4j.driver.Values.ofString;
 
 public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
@@ -72,6 +74,11 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
 
                     assertThat(nodesCount).isGreaterThan(0);
                 }
+            }
+
+            try (Session session = driver.session(SessionConfig.forDatabase("movies"))) {
+                var constraints = session.run("SHOW CONSTRAINTS").list().stream().map(record -> record.get("name").asString()).toList();
+                Assertions.assertTrue(constraints.contains("cr_person_id_unique"));
             }
         }
 

@@ -15,16 +15,13 @@
  *
  */
 
-package com.graphaware.neo4j.config.model.rbac;
-
-import com.graphaware.neo4j.config.model.UniqueConstraint;
+package com.graphaware.neo4j.config.model.schema;
 
 import java.util.List;
 
-
-public record Constraints(List<UniqueConstraint> uniqueConstraints) {
-
-    public Constraints {
-        uniqueConstraints = List.copyOf(uniqueConstraints);
+public record RelationshipIndex(List<String> relationshipTypes, List<String> properties, String name, IndexType type) {
+    public RelationshipIndex {
+        relationshipTypes = List.copyOf(relationshipTypes);
+        properties = List.copyOf(properties);
     }
 }
