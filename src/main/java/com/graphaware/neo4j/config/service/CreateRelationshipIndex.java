@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 public class CreateRelationshipIndex {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CreateNodeIndex.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CreateRelationshipIndex.class);
 
     private final Driver driver;
     private final RelationshipIndex relationshipIndex;
