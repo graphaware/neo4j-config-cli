@@ -1,11 +1,15 @@
 package com.graphaware.neo4j.config.model;
 
-import java.util.List;
+import com.graphaware.neo4j.config.model.schema.NodeIndex;
+import com.graphaware.neo4j.config.model.schema.RelationshipIndex;
 
-public record Indexes(List<FullTextIndex> fulltext, List<UniqueConstraint> uniqueness) {
+import java.util.List;
+import java.util.Optional;
+
+public record Indexes(List<NodeIndex> nodes, List<RelationshipIndex> relationships) {
 
     public Indexes {
-        fulltext = List.copyOf(fulltext);
-        uniqueness = List.copyOf(uniqueness);
+        nodes = List.copyOf(nodes);
+        relationships = List.copyOf(Optional.ofNullable(relationships).orElse(List.of()));
     }
 }
