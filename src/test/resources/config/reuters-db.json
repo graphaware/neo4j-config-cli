@@ -15,7 +15,8 @@
           "properties": ["name"],
           "type": "FULLTEXT"
         }
-      ]
+      ],
+      "relationships": []
     },
     "constraints": {
       "nodes": [
@@ -29,7 +30,8 @@
           "property": "url",
           "type": "UNIQUE"
         }
-      ]
+      ],
+      "relationships": []
     },
     "seeds": ["articles.cypher"]
   }
