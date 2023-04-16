@@ -15,7 +15,7 @@ The following `docker-compose.yml` :
 version: '3'
 services:
   neo4j:
-    image: neo4j:4.4.15-enterprise
+    image: neo4j:5.6.0-enterprise
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -23,7 +23,7 @@ services:
       - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
       - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-password}
   neo4j-config-cli:
-    image: graphaware/neo4j-config-cli:2.0.0
+    image: graphaware/neo4j-config-cli:2.1.0
     environment:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=password

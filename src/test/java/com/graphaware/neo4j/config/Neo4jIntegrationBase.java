@@ -22,7 +22,7 @@ public abstract class Neo4jIntegrationBase {
     }
 
     @Container
-    protected static Neo4jContainer neo4jContainer = (Neo4jContainer) new Neo4jContainer("neo4j:4.4.11-enterprise")
+    protected static Neo4jContainer neo4jContainer = (Neo4jContainer) new Neo4jContainer("neo4j:4.4.19-enterprise")
             .withAdminPassword("password")
             .withEnv("NEO4J_ACCEPT_LICENSE_AGREEMENT", "yes");
 
