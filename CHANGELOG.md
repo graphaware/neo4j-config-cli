@@ -1,3 +1,7 @@
+## 2.2.0
+
+Added support for Relationship Constraints
+
 ## 1.3.0
 
 - Seed only command

@@ -1,0 +1,76 @@
+{
+  "kind": "Database",
+  "name": "relationship.constraints",
+  "dropIfExists": "true",
+  "indexes": {
+    "nodes": [
+      {
+        "labels": ["Person"],
+        "properties": ["name"],
+        "name": "Person",
+        "type": "FULLTEXT"
+      }
+    ],
+    "relationships": [
+      {
+        "relationshipTypes": ["ACTED_IN"],
+        "properties": ["roles"],
+        "name": "rel_actedIn_roles"
+      },
+      {
+        "relationshipTypes": ["PRODUCED"],
+        "properties": ["year"],
+        "name": "rel_produced_year",
+        "type": "BTREE"
+      },
+      {
+        "relationshipTypes": ["ACTED_IN"],
+        "properties": ["roles"],
+        "name": "ftx_actedIn_roles",
+        "type": "FULLTEXT"
+      },
+      {
+        "relationshipTypes": ["RELTYPE_1", "RELTYPE_2"],
+        "properties": ["id"],
+        "name": "rel_idx_$relationshipType_id"
+      }
+    ]
+  },
+  "constraints": {
+    "nodes": [
+      {
+        "labels": ["Person"],
+        "properties": ["id"],
+        "type": "UNIQUE",
+        "name": "cr_person_id_unique"
+      },
+      {
+        "labels": ["Movie"],
+        "properties": ["title"],
+        "type": "NODE_KEY",
+        "name": "cr_movie_title_nk"
+      },
+      {
+        "labels": ["Thing","AnotherThing"],
+        "properties": ["name"],
+        "type": "NOT_NULL",
+        "name": "cr_$label_name_not_null"
+      }
+    ],
+    "relationships": [
+      {
+        "relationshipTypes": ["RELTYPE_3"],
+        "properties": ["id"],
+        "name": "rel_uniq_$relationshipType_id",
+        "type": "UNIQUE"
+      },
+      {
+        "relationshipTypes": ["RELTYPE_4"],
+        "properties": ["id"],
+        "name": "rel_rk_$relationshipType_id",
+        "type": "RELATIONSHIP_KEY"
+      }
+    ]
+  },
+  "seeds": ["movies.cypher"]
+}
