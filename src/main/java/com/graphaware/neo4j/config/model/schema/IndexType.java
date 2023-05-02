@@ -21,5 +21,6 @@ public enum IndexType {
     FULLTEXT,
     BTREE,
     RANGE,
-    TEXT
+    TEXT,
+    POINT
 }

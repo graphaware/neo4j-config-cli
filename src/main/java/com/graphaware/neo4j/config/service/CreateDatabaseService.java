@@ -77,6 +77,12 @@ public class CreateDatabaseService {
             database.constraints().nodes().forEach(constraint -> {
                 new CreateNodeConstraint(driver, constraint).createUniqueConstraintOnDatabase(database.name());
             });
+
+            if (isNeo4j5()) {
+                database.constraints().relationships().forEach(relationshipConstraint -> {
+                    new CreateRelationshipConstraint(driver, relationshipConstraint).createSchemaConstraintForRelationship(database.name());
+                });
+            }
         }
     }
 

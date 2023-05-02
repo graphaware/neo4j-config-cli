@@ -30,8 +30,11 @@ import org.springframework.core.io.ResourceLoader;
 import org.testcontainers.containers.Neo4jContainer;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.neo4j.driver.Values.ofString;
 
@@ -73,6 +76,15 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
                     var nodesCount = session.run("MATCH (n) RETURN count(n) AS c").single().get("c").asLong();
 
                     assertThat(nodesCount).isGreaterThan(0);
+                }
+            }
+
+            if (version.startsWith("5")) {
+                try (Session session = driver.session(SessionConfig.forDatabase("relationship.constraints"))) {
+                    final Map<String, String> constraints = new HashMap<>();
+                    session.run("SHOW CONSTRAINTS").list().forEach(record -> constraints.put(record.get("name").asString(), record.get("type").asString()));
+                    Assertions.assertEquals("RELATIONSHIP_UNIQUENESS", constraints.get("rel_uniq_RELTYPE_3_id"));
+                    Assertions.assertEquals("RELATIONSHIP_KEY", constraints.get("rel_rk_RELTYPE_4_id"));
                 }
             }
 

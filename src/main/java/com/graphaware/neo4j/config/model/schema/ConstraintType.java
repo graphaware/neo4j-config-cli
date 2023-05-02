@@ -20,5 +20,6 @@ package com.graphaware.neo4j.config.model.schema;
 public enum ConstraintType {
     UNIQUE,
     NOT_NULL,
-    NODE_KEY
+    NODE_KEY,
+    RELATIONSHIP_KEY
 }
