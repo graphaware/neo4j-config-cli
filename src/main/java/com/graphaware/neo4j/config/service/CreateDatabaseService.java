@@ -23,9 +23,32 @@ public class CreateDatabaseService {
     }
 
     public void createDatabase(Database database) {
-        createDatabase(database.name(), database.dropIfExists(), database.skipIfCreate(), database.seedFromUri());
-        createIndexes(database);
-        createConstraints(database);
+        if (database.composite()) {
+            createCompositeDatabase(database);
+        } else {
+            createDatabase(database.name(), database.dropIfExists(), database.skipIfCreate(), database.seedFromUri());
+            createIndexes(database);
+            createConstraints(database);
+        }
+    }
+
+    private void createCompositeDatabase(Database database) {
+        if (database.skipIfCreate()) {
+            LOG.info("Skipping creation of composite database {}", database.name());
+            return;
+        }
+
+        LOG.info("Creating composite database {}", database.name());
+        String query = "CREATE COMPOSITE DATABASE `%s` IF NOT EXISTS WAIT".formatted(database.name());
+        try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
+            session.run(query);
+
+            for (String db : database.constituents()) {
+                LOG.info("Creating alias {} for composite database {}", db, database.name());
+                String aliasQuery = "CREATE ALIAS `%s`.`%s` IF NOT EXISTS FOR DATABASE %s".formatted(database.name(), db, db);
+                session.run(aliasQuery);
+            }
+        }
     }
 
     public void createDatabase(String name, boolean dropIfExists, boolean skipCreate, String fromUri) {
