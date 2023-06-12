@@ -37,6 +37,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -66,17 +67,24 @@ public class GraphDatabaseImport {
     public void importFile(File file, Map<String, String> seeds) throws Exception {
         String s = new String(Files.readAllBytes(Paths.get(file.getPath())));
         Map<String, Object> config = MAPPER.readValue(s, new TypeReference<>() {});
+        List<Database> compositeDatabases = new ArrayList<>();
         if (config.get("kind").equals("Database")) {
             Database database = MAPPER.convertValue(config, Database.class);
-            Map<String, String> remoteSeeds = getRemoteSeeds(database);
-            seeds.putAll(remoteSeeds);
-            importDatabase(database);
-            if (!database.seeds().isEmpty()) {
-                for (String se : database.seeds()) {
-                    importSeed(database.name(), se, seeds);
+            if (database.composite()) {
+                compositeDatabases.add(database);
+            } else {
+                Map<String, String> remoteSeeds = getRemoteSeeds(database);
+                seeds.putAll(remoteSeeds);
+                importDatabase(database);
+                if (!database.seeds().isEmpty()) {
+                    for (String se : database.seeds()) {
+                        importSeed(database.name(), se, seeds);
+                    }
                 }
             }
         }
+
+        compositeDatabases.forEach(this::importDatabase);
 
         if (config.get("kind").equals("Role")) {
             importPrivileges(MAPPER.convertValue(config, Role.class));
