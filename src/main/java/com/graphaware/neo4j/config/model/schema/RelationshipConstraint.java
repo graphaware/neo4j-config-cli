@@ -19,7 +19,7 @@ package com.graphaware.neo4j.config.model.schema;
 
 import java.util.List;
 
-public record RelationshipConstraint(List<String> relationshipTypes, List<String> properties, String name, ConstraintType type) {
+public record RelationshipConstraint(List<String> relationshipTypes, List<String> properties, String name, ConstraintType type, PropertyType propertyType) {
     public RelationshipConstraint {
         relationshipTypes = List.copyOf(relationshipTypes);
         properties = List.copyOf(properties);

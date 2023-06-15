@@ -55,6 +55,12 @@
           "properties": ["name"],
           "type": "NOT_NULL",
           "name": "cr_$label_name_not_null"
+        },
+        {
+          "labels": ["Person"],
+          "properties": ["name"],
+          "type": "PROPERTY_TYPE",
+          "propertyType": "STRING"
         }
       ],
       "relationships": []

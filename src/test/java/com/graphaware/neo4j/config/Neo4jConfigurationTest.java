@@ -34,8 +34,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.neo4j.driver.Values.ofString;
 
 public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {

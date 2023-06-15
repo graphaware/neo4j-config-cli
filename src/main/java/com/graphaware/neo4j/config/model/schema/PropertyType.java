@@ -17,11 +17,17 @@
 
 package com.graphaware.neo4j.config.model.schema;
 
-import java.util.List;
+public enum PropertyType {
 
-public record NodeConstraint(List<String> labels, List<String> properties, String name, ConstraintType type, PropertyType propertyType) {
-    public NodeConstraint {
-        labels = List.copyOf(labels);
-        properties = List.copyOf(properties);
-    }
+    BOOLEAN,
+    STRING,
+    INTEGER,
+    FLOAT,
+    DATE,
+    LOCAL_TIME,
+    ZONED_TIME,
+    LOCAL_DATETIME,
+    ZONED_DATETIME,
+    DURATION,
+    POINT
 }

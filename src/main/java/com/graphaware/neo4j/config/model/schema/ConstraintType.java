@@ -21,5 +21,7 @@ public enum ConstraintType {
     UNIQUE,
     NOT_NULL,
     NODE_KEY,
-    RELATIONSHIP_KEY
+    RELATIONSHIP_KEY,
+
+    PROPERTY_TYPE
 }
