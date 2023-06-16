@@ -72,9 +72,10 @@
       },
       {
         "relationshipTypes": ["RELTYPE_100"],
-        "properties": "since",
+        "properties": ["since"],
         "name": "rel_ptc_since_$relationshipType",
-        "type": "PROPERTY_TYPE"
+        "type": "PROPERTY_TYPE",
+        "propertyType": "ZONED_DATETIME"
       }
     ]
   },

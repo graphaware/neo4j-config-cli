@@ -69,6 +69,7 @@ public class GraphDatabaseImport {
         Map<String, Object> config = MAPPER.readValue(s, new TypeReference<>() {});
         List<Database> compositeDatabases = new ArrayList<>();
         if (config.get("kind").equals("Database")) {
+            LOG.info("deserializing file %s to Database object".formatted(file.getPath()));
             Database database = MAPPER.convertValue(config, Database.class);
             if (database.composite()) {
                 compositeDatabases.add(database);

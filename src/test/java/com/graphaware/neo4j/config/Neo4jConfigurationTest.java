@@ -80,9 +80,23 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
             if (version.startsWith("5")) {
                 try (Session session = driver.session(SessionConfig.forDatabase("relationship.constraints"))) {
                     final Map<String, String> constraints = new HashMap<>();
-                    session.run("SHOW CONSTRAINTS").list().forEach(record -> constraints.put(record.get("name").asString(), record.get("type").asString()));
+                    final Map<String, String> propertyTypeConstraints = new HashMap<>();
+                    session.run("SHOW CONSTRAINTS").list().forEach(record -> {
+                                constraints.put(record.get("name").asString(), record.get("type").asString());
+                                propertyTypeConstraints.put(record.get("name").asString(), record.get("propertyType").asString());
+                            });
+
                     Assertions.assertEquals("RELATIONSHIP_UNIQUENESS", constraints.get("rel_uniq_RELTYPE_3_id"));
                     Assertions.assertEquals("RELATIONSHIP_KEY", constraints.get("rel_rk_RELTYPE_4_id"));
+                    Assertions.assertEquals("ZONED DATETIME", propertyTypeConstraints.get("rel_ptc_since_RELTYPE_100"));
+                }
+
+                try (Session session = driver.session(SessionConfig.forDatabase("movies"))) {
+                    final Map<String, String> propertyTypeConstraints = new HashMap<>();
+                    session.run("SHOW CONSTRAINTS").list().forEach(record -> {
+                        propertyTypeConstraints.put(record.get("name").asString(), record.get("propertyType").asString());
+                    });
+                    Assertions.assertEquals("STRING", propertyTypeConstraints.get("unique_person_name"));
                 }
             }
 
