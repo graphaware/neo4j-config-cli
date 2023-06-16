@@ -1,6 +1,7 @@
 package com.graphaware.neo4j.config.service;
 
 import com.graphaware.neo4j.config.model.Database;
+import com.graphaware.neo4j.config.model.schema.ConstraintType;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
@@ -97,8 +98,12 @@ public class CreateDatabaseService {
 
     private void createConstraints(Database database) {
         if (null != database.constraints()) {
-            database.constraints().nodes().forEach(constraint -> {
-                new CreateNodeConstraint(driver, constraint).createUniqueConstraintOnDatabase(database.name());
+            database.constraints().nodes()
+                    .stream().filter(c -> {
+                        return !c.type().equals(ConstraintType.PROPERTY_TYPE) || isNeo4j5();
+                    })
+                    .forEach(constraint -> {
+                new CreateNodeConstraint(driver, constraint).createConstraintOnDatabase(database.name());
             });
 
             if (isNeo4j5()) {

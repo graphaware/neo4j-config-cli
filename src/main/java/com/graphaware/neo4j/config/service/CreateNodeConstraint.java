@@ -19,6 +19,7 @@ package com.graphaware.neo4j.config.service;
 
 import com.graphaware.neo4j.config.model.schema.ConstraintType;
 import com.graphaware.neo4j.config.model.schema.NodeConstraint;
+import com.graphaware.neo4j.config.model.schema.PropertyType;
 import org.apache.commons.lang3.StringUtils;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Session;
@@ -47,7 +48,7 @@ public class CreateNodeConstraint {
         this.nodeConstraint = nodeConstraint;
     }
 
-    public void createUniqueConstraintOnDatabase(String databaseName) {
+    public void createConstraintOnDatabase(String databaseName) {
         nodeConstraint.labels().forEach(label -> {
             List<String> properties = nodeConstraint.properties()
                     .stream().map(p -> String.format("n.`%s`", p))
@@ -61,7 +62,9 @@ public class CreateNodeConstraint {
                     constraintName,
                     label,
                     propsString,
-                    TYPE_TO_QUERY.get(nodeConstraint.type())
+                    nodeConstraint.type().equals(ConstraintType.PROPERTY_TYPE)
+                            ? propertyTypeToCypher(nodeConstraint.propertyType())
+                            : TYPE_TO_QUERY.get(nodeConstraint.type())
             );
 
             LOG.info("Creating unique constraint {}", query);
@@ -69,5 +72,9 @@ public class CreateNodeConstraint {
                 session.run(query);
             }
         });
+    }
+
+    private String propertyTypeToCypher(PropertyType p) {
+        return ":: %s".formatted(p.name().replace("_", " "));
     }
 }

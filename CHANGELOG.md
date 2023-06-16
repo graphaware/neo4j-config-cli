@@ -1,6 +1,14 @@
+## 2.4.0 
+
+- Added support for property type constraints
+
+## 2.3.0
+
+- Added support for composite database creation
+
 ## 2.2.0
 
-Added support for Relationship Constraints
+- Added support for Relationship Constraints
 
 ## 1.3.0
 

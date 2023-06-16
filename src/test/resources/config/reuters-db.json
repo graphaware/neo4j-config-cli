@@ -22,12 +22,12 @@
       "nodes": [
         {
           "labels": ["Author"],
-          "property": "name",
+          "properties": ["name"],
           "type": "UNIQUE"
         },
         {
           "labels": ["Article"],
-          "property": "url",
+          "properties": ["url"],
           "type": "UNIQUE"
         }
       ],

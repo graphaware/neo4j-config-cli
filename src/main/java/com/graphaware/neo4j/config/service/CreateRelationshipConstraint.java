@@ -17,6 +17,8 @@
 
 package com.graphaware.neo4j.config.service;
 
+import com.graphaware.neo4j.config.model.schema.ConstraintType;
+import com.graphaware.neo4j.config.model.schema.PropertyType;
 import com.graphaware.neo4j.config.model.schema.RelationshipConstraint;
 import org.apache.commons.lang3.StringUtils;
 import org.neo4j.driver.Driver;
@@ -48,11 +50,21 @@ public class CreateRelationshipConstraint {
                     .stream().map(p -> String.format("r.`%s`", p))
                     .toList();
             String propsString = StringUtils.join(properties, ",");
-            String query = "CREATE CONSTRAINT %s IF NOT EXISTS FOR ()-[r:`%s`]-() REQUIRE (%s) IS %s".formatted(name, relType, propsString, type.name().replace("_", " "));
+            String query = "CREATE CONSTRAINT %s IF NOT EXISTS FOR ()-[r:`%s`]-() REQUIRE (%s) IS %s".formatted(
+                    name,
+                    relType,
+                    propsString,
+                    type.equals(ConstraintType.PROPERTY_TYPE)
+                            ? propertyTypeToCypher(relationshipConstraint.propertyType())
+                            : type.name().replace("_", " "));
             LOG.info("Creating relationship constraint {}", query);
             try (Session session = driver.session(SessionConfig.forDatabase(databaseName))) {
                 session.run(query);
             }
         });
+    }
+
+    private String propertyTypeToCypher(PropertyType p) {
+        return ":: %s".formatted(p.name().replace("_", " "));
     }
 }

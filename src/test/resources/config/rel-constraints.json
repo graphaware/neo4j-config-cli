@@ -69,6 +69,13 @@
         "properties": ["id"],
         "name": "rel_rk_$relationshipType_id",
         "type": "RELATIONSHIP_KEY"
+      },
+      {
+        "relationshipTypes": ["RELTYPE_100"],
+        "properties": ["since"],
+        "name": "rel_ptc_since_$relationshipType",
+        "type": "PROPERTY_TYPE",
+        "propertyType": "ZONED_DATETIME"
       }
     ]
   },
