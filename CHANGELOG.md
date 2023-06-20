@@ -1,3 +1,9 @@
+## 2.5.0
+
+- Added support for composite database seeds
+- Composite databases are now created after normal databases
+- Drop database takes care of removing aliases before drop
+
 ## 2.4.0 
 
 - Added support for property type constraints

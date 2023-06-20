@@ -65,15 +65,16 @@ public class Neo4jConfigRunner implements CommandLineRunner, ExitCodeGenerator {
             FilesToImport filesToImport = FileCollectionUtils.getFilesToImport(importFiles);
             Map<String, String> seeds = FileCollectionUtils.buildSeeds(filesToImport.getCypherSeeds());
             graphDatabaseImport.waitUntilStarted();
-            filesToImport.getConfigurationFiles()
-                    .forEach(f -> {
-                        LOG.info("Will import from file {}", f.getPath());
-                        try {
-                            graphDatabaseImport.importFile(f, seeds);
-                        } catch (Exception e) {
-                            LOG.error(e.getMessage());
-                        }
-                    });
+            graphDatabaseImport.importFiles(filesToImport.getConfigurationFiles(), seeds);
+//            filesToImport.getConfigurationFiles()
+//                    .forEach(f -> {
+//                        LOG.info("Will import from file {}", f.getPath());
+//                        try {
+//                            graphDatabaseImport.importFile(f, seeds);
+//                        } catch (Exception e) {
+//                            LOG.error(e.getMessage());
+//                        }
+//                    });
         }
         LOG.info("Ended command line application");
     }

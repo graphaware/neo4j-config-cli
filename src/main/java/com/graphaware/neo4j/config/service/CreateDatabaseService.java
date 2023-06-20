@@ -10,7 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static org.neo4j.driver.Values.ofString;
 
 @Service
 public class CreateDatabaseService {
@@ -115,10 +120,27 @@ public class CreateDatabaseService {
     }
 
     private void dropDatabaseIfExists(String name) {
+        dropDatabaseAliases(name);
         String query = String.format("DROP DATABASE %s IF EXISTS", name);
         LOG.info("Dropping database {}", name);
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
             session.run(query);
+        }
+    }
+
+    private void dropDatabaseAliases(String name) {
+        Set<String> aliases = new HashSet<>();
+        try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
+            session.run("SHOW DATABASES YIELD name, aliases RETURN *").forEachRemaining(record -> {
+                if (record.get("name").asString().equals(name)) {
+                    aliases.addAll(record.get("aliases").asList(ofString()));
+                }
+            });
+
+            aliases.forEach(alias -> {
+                LOG.info("Dropping database alias {}", alias);
+                session.run("DROP ALIAS $alias IF EXISTS FOR DATABASE", Map.of("alias", alias));
+            });
         }
     }
 
