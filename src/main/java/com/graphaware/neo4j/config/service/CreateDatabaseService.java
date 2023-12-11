@@ -67,7 +67,7 @@ public class CreateDatabaseService {
             dropDatabaseIfExists(name);
         }
 
-        String query = String.format("CREATE DATABASE %s IF NOT EXISTS", name);
+        String query = String.format("CREATE DATABASE %s IF NOT EXISTS WAIT", name);
 
         if (fromUri != null && isNeo4j5()) {
             LOG.info("seedFromUri detected, will seed database from {}", fromUri);
