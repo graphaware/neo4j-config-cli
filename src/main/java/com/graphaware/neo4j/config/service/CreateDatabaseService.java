@@ -45,7 +45,7 @@ public class CreateDatabaseService {
         }
 
         LOG.info("Creating composite database {}", database.name());
-        String query = "CREATE COMPOSITE DATABASE `%s` IF NOT EXISTS WAIT".formatted(database.name());
+        String query = "CREATE COMPOSITE DATABASE `%s` IF NOT EXISTS ".formatted(database.name());
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
             session.run(query);
 
@@ -67,12 +67,13 @@ public class CreateDatabaseService {
             dropDatabaseIfExists(name);
         }
 
-        String query = String.format("CREATE DATABASE %s IF NOT EXISTS WAIT", name);
+        String query = "CREATE DATABASE %s IF NOT EXISTS ".formatted(name);
 
         if (fromUri != null && isNeo4j5()) {
             LOG.info("seedFromUri detected, will seed database from {}", fromUri);
-            query = String.format("%s OPTIONS { existingData: \"use\", seedUri: \"%s\"} WAIT", query, fromUri);
+            query = "%s OPTIONS { existingData: \"use\", seedUri: \"%s\"} ".formatted(query, fromUri);
         }
+        query = "%s WAIT".formatted(query);
 
         LOG.info("Creating database {} ", name);
         LOG.debug("Query : {}", query);
