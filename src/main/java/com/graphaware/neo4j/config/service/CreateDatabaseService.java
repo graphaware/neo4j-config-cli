@@ -71,13 +71,21 @@ public class CreateDatabaseService {
 
         if (fromUri != null && isNeo4j5()) {
             LOG.info("seedFromUri detected, will seed database from {}", fromUri);
-            query = String.format("%s OPTIONS { existingData: \"use\", seedUri: \"%s\"}", query, fromUri);
+            query = String.format("%s OPTIONS { existingData: \"use\", seedUri: \"%s\"} WAIT", query, fromUri);
         }
 
         LOG.info("Creating database {} ", name);
         LOG.debug("Query : {}", query);
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
-            session.run(query);
+            var result = session.run(query).single();
+            var success = result.get("success").asBoolean();
+            var message = result.get("message").asString();
+
+            if (!success) {
+                LOG.error("Creating database %s with seedURI failed with the following message : %s".formatted(name, message));
+                LOG.info("Dropping database %s after failed seedURI".formatted(name));
+                return;
+            }
         }
         waitDatabaseIsOnline(name);
     }
