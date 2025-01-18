@@ -119,11 +119,45 @@ Two `kind` of config files are supported today :
         "label": "Person",
         "property": "name",
         "type": "UNIQUE"
+      },
+      {
+        "labels": ["FacebookEvent"],
+        "properties": ["date"],
+        "type": "PROPERTY_TYPE",
+        "propertyType": "DATE",
+        "name": "facebook_event_date_type"
       }
     ]
   },
   "seeds": ["movies.cypher"]
 }
+```
+
+#### Property type enum values
+
+```
+BOOLEAN("BOOLEAN"),
+STRING
+INTEGER
+FLOAT
+DATE
+LOCAL_TIME
+ZONED_TIME
+LOCAL_DATETIME
+ZONED_DATETIME
+DURATION
+POINT
+LIST_OF_BOOLEAN
+LIST_OF_STRING
+LIST_OF_INTEGER
+LIST_OF_FLOAT
+LIST_OF_DATETIME
+LIST_OF_LOCAL_TIME
+LIST_OF_ZONED_TIME
+LIST_OF_LOCAL_DATETIME
+LIST_OF_DATE
+LIST_OF_DURATION
+LIST_OF_POINT
 ```
 
 ### Role Config File
