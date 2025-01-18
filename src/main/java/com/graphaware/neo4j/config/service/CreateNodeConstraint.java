@@ -34,12 +34,6 @@ public class CreateNodeConstraint {
 
     private static final Logger LOG = LoggerFactory.getLogger(CreateNodeConstraint.class);
 
-    private static final Map<ConstraintType, String> TYPE_TO_QUERY = Map.of(
-            ConstraintType.UNIQUE, "UNIQUE",
-            ConstraintType.NODE_KEY, "NODE KEY",
-            ConstraintType.NOT_NULL, "NOT NULL"
-    );
-
     private final Driver driver;
     private final NodeConstraint nodeConstraint;
 
@@ -64,7 +58,7 @@ public class CreateNodeConstraint {
                     propsString,
                     nodeConstraint.type().equals(ConstraintType.PROPERTY_TYPE)
                             ? propertyTypeToCypher(nodeConstraint.propertyType())
-                            : TYPE_TO_QUERY.get(nodeConstraint.type())
+                            : nodeConstraint.type().getValue()
             );
 
             LOG.info("Creating unique constraint {}", query);
@@ -75,6 +69,6 @@ public class CreateNodeConstraint {
     }
 
     private String propertyTypeToCypher(PropertyType p) {
-        return ":: %s".formatted(p.name().replace("_", " "));
+        return ":: %s".formatted(p.getValue().replace("_", " "));
     }
 }

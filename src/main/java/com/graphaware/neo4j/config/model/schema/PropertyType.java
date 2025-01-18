@@ -19,15 +19,43 @@ package com.graphaware.neo4j.config.model.schema;
 
 public enum PropertyType {
 
-    BOOLEAN,
-    STRING,
-    INTEGER,
-    FLOAT,
-    DATE,
-    LOCAL_TIME,
-    ZONED_TIME,
-    LOCAL_DATETIME,
-    ZONED_DATETIME,
-    DURATION,
-    POINT
+    BOOLEAN("BOOLEAN"),
+    STRING("STRING"),
+    INTEGER("INTEGER"),
+    FLOAT("FLOAT"),
+    DATE("DATE"),
+    LOCAL_TIME("LOCAL TIME"),
+    ZONED_TIME("ZONED TIME"),
+    LOCAL_DATETIME("LOCAL DATETIME"),
+    ZONED_DATETIME("ZONED DATETIME"),
+    DURATION("DURATION"),
+    POINT("POINT"),
+    LIST_OF_BOOLEAN("LIST<BOOLEAN NOT NULL>"),
+    LIST_OF_STRING("LIST<STRING NOT NULL>"),
+    LIST_OF_INTEGER("LIST<INTEGER NOT NULL>"),
+    LIST_OF_FLOAT("LIST<FLOAT NOT NULL>"),
+    LIST_OF_DATETIME("LIST<DATETIME NOT NULL>"),
+    LIST_OF_LOCAL_TIME("LIST<LOCAL TIME NOT NULL>"),
+    LIST_OF_ZONED_TIME("LIST<ZONED TIME NOT NULL>"),
+    LIST_OF_LOCAL_DATETIME("LIST<LOCAL DATETIME NOT NULL>"),
+    LIST_OF_DATE("LIST<DATE NOT NULL>"),
+    LIST_OF_DURATION("LIST<DURATION NOT NULL>"),
+    LIST_OF_POINT("LIST<POINT NOT NULL>"),
+    ;
+
+    private final String value;
+
+    PropertyType(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    // Optional: Override toString() to return the string value
+    @Override
+    public String toString() {
+        return value;
+    }
 }

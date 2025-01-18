@@ -1,3 +1,9 @@
+## 2.7.0
+
+- Upgrade driver to 5.27.0
+- Baseline 4.4.40 and 5.26.0 for tests
+- Support LIST<> property type constraints
+
 ## 2.5.0
 
 - Added support for composite database seeds

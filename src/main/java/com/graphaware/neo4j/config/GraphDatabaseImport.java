@@ -89,7 +89,7 @@ public class GraphDatabaseImport {
                     rolesToImport.add(role);
                 }
             } catch (Exception e) {
-                LOG.error("Error when deserializing file %s".formatted(file.toPath().toString()));
+                LOG.error("Error when deserializing file %s - %s".formatted(file.toPath().toString(), e.getMessage()));
             }
         });
 

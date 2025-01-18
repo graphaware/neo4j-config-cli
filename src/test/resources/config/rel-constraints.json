@@ -55,6 +55,20 @@
         "properties": ["name"],
         "type": "NOT_NULL",
         "name": "cr_$label_name_not_null"
+      },
+      {
+        "labels": ["Person"],
+        "properties": ["name"],
+        "type": "PROPERTY_TYPE",
+        "name": "person_property_name_string",
+        "propertyType": "STRING"
+      },
+      {
+        "labels": ["Movie"],
+        "properties": ["genres"],
+        "type": "PROPERTY_TYPE",
+        "name": "movie_property_genres_list_strings",
+        "propertyType": "LIST_OF_STRING"
       }
     ],
     "relationships": [
