@@ -18,10 +18,25 @@
 package com.graphaware.neo4j.config.model.schema;
 
 public enum ConstraintType {
-    UNIQUE,
-    NOT_NULL,
-    NODE_KEY,
-    RELATIONSHIP_KEY,
+    UNIQUE("UNIQUE"),
+    NOT_NULL("NOT NULL"),
+    NODE_KEY("NODE KEY"),
+    RELATIONSHIP_KEY("RELATIONSHIP KEY"),
 
-    PROPERTY_TYPE
+    PROPERTY_TYPE("PROPERTY_TYPE");
+
+    private final String value;
+
+    ConstraintType(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

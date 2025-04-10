@@ -89,6 +89,8 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
                     Assertions.assertEquals("RELATIONSHIP_UNIQUENESS", constraints.get("rel_uniq_RELTYPE_3_id"));
                     Assertions.assertEquals("RELATIONSHIP_KEY", constraints.get("rel_rk_RELTYPE_4_id"));
                     Assertions.assertEquals("ZONED DATETIME", propertyTypeConstraints.get("rel_ptc_since_RELTYPE_100"));
+                    Assertions.assertEquals("LIST<STRING NOT NULL>", propertyTypeConstraints.get("movie_property_genres_list_strings"));
+                    Assertions.assertEquals("STRING", propertyTypeConstraints.get("person_property_name_string"));
                 }
 
                 try (Session session = driver.session(SessionConfig.forDatabase("movies"))) {

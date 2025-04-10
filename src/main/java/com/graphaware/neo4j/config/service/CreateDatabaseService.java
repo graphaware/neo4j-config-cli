@@ -67,7 +67,7 @@ public class CreateDatabaseService {
             dropDatabaseIfExists(name);
         }
 
-        String query = "CREATE DATABASE %s IF NOT EXISTS ".formatted(name);
+        String query = "CREATE DATABASE `%s` IF NOT EXISTS ".formatted(name);
 
         if (fromUri != null && isNeo4j5()) {
             LOG.info("seedFromUri detected, will seed database from {}", fromUri);
@@ -78,7 +78,7 @@ public class CreateDatabaseService {
         LOG.info("Creating database {} ", name);
         LOG.debug("Query : {}", query);
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
-            var result = session.run(query).single();
+            var result = session.run(query).list().get(0);
             var success = result.get("success").asBoolean();
             var message = result.get("message").asString();
 
