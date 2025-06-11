@@ -34,7 +34,7 @@ public abstract class MultipleNeo4jVersionsTest {
     protected static String HEAP_SIZE = "256M";
 
     public static Stream<String> neo4jVersions() {
-        return Stream.of("4.4.40", "5.26.0");
+        return Stream.of("4.4.40", "5.26.7", "2025.05.0");
     }
 
     protected static String heapSizeSetting(Neo4jVersion version) {
@@ -52,7 +52,7 @@ public abstract class MultipleNeo4jVersionsTest {
                 .withEnv("NEO4J_ACCEPT_LICENSE_AGREEMENT", "yes")
                 .withEnv(heapSizeSetting(neo4jVersion), HEAP_SIZE)
                 .withReuse(true);
-        if (version.startsWith("5")) {
+        if (version.startsWith("5") || version.startsWith("20")) {
             container.withEnv("NEO4J_dbms_databases_seed__from__uri__providers", "URLConnectionSeedProvider");
         }
         container.start();

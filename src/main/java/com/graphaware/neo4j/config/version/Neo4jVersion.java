@@ -26,7 +26,8 @@ public enum Neo4jVersion {
     /**
      * Constant for Neo4j 5
      */
-    V5;
+    V5,
+    CALENDAR_VERSION;
 
     Neo4jVersion() {
     }
@@ -38,6 +39,8 @@ public enum Neo4jVersion {
             return V4_4;
         } else if (version.startsWith("5.")) {
             return V5;
+        } else if (version.startsWith("20")) {
+            return CALENDAR_VERSION;
         }
 
         throw new IllegalArgumentException(String.format("Unsupported Neo4j version %s", version));

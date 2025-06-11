@@ -1,3 +1,11 @@
+## 2.7.2
+
+- Hotfix : Handle Neo4j 2025.05.0 returning more than one row for `dbms.components()`
+
+## 2.7.1
+
+- Hotfix : create database when in cluster
+
 ## 2.7.0
 
 - Upgrade driver to 5.27.0
