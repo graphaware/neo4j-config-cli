@@ -83,21 +83,23 @@ public class CreateRelationshipIndex {
 
     private IndexType getTypeDependingOnDatabase() {
         if (relationshipIndex.type() == null) {
-            return isNeo4j5() ? IndexType.RANGE : IndexType.BTREE;
+            return isNeo4j5OrAbove() ? IndexType.RANGE : IndexType.BTREE;
         }
 
-        if (relationshipIndex.type().equals(IndexType.BTREE) && isNeo4j5()) {
+        if (relationshipIndex.type().equals(IndexType.BTREE) && isNeo4j5OrAbove()) {
             return IndexType.RANGE;
         }
 
         return relationshipIndex.type();
     }
 
-    private boolean isNeo4j5() {
+    private boolean isNeo4j5OrAbove() {
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
-            var version = session.run("CALL dbms.components() YIELD versions RETURN versions[0] AS version").single().get("version").asString();
+            var result = session.run("CALL dbms.components()");
+            var dbmsComponents = result.list().stream().map(r -> r.as(DbmsComponent.class)).toList();
+            var version = dbmsComponents.stream().filter(c -> c.name().equals("Neo4j Kernel")).findFirst().get().versions().get(0);
 
-            return version.startsWith("5");
+            return version.startsWith("5") || version.startsWith("20");
         }
     }
 }

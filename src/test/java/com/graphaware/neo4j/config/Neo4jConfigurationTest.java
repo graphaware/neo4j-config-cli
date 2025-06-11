@@ -19,6 +19,7 @@ package com.graphaware.neo4j.config;
 
 import com.graphaware.neo4j.config.properties.ImportConfiguration;
 import com.graphaware.neo4j.config.service.CreateDatabaseService;
+import com.graphaware.neo4j.config.version.Neo4jVersion;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -47,6 +48,7 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
         var config = new ImportConfiguration(configPath, false, null, "neo4j");
         Neo4jContainer<?> neo4j = getNeo4j(version);
         Driver neo4jDriver = getDriver(neo4j);
+        var serverVersion = Neo4jVersion.of(version);
 
         var service = new CreateDatabaseService(neo4jDriver);
         var importer = new GraphDatabaseImport(neo4jDriver, service);
@@ -67,17 +69,24 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
                 assertThat(roles).asList().contains("ut1");
             }
 
+            try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
+                var dbs = session.run("SHOW DATABASES YIELD *");
+                dbs.forEachRemaining(r -> {
+                    System.out.println(r.asMap());
+                });
+            }
+
             try (Session session = driver.session(SessionConfig.forDatabase("world.cup"))) {
                 session.run("CALL db.ping()").consume();
 
-                if (version.startsWith("5")) {
+                if (isNeo4j5OrAbove(serverVersion)) {
                     var nodesCount = session.run("MATCH (n) RETURN count(n) AS c").single().get("c").asLong();
 
                     assertThat(nodesCount).isGreaterThan(0);
                 }
             }
 
-            if (version.startsWith("5")) {
+            if (isNeo4j5OrAbove(serverVersion)) {
                 try (Session session = driver.session(SessionConfig.forDatabase("relationship.constraints"))) {
                     final Map<String, String> constraints = new HashMap<>();
                     final Map<String, String> propertyTypeConstraints = new HashMap<>();
@@ -108,6 +117,10 @@ public class Neo4jConfigurationTest extends MultipleNeo4jVersionsTest {
             }
         }
 
+    }
+
+    private static boolean isNeo4j5OrAbove(Neo4jVersion version) {
+        return version.equals(Neo4jVersion.V5) || version.equals(Neo4jVersion.CALENDAR_VERSION);
     }
 
 }
