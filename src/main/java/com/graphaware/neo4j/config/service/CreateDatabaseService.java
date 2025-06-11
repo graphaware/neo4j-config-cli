@@ -10,10 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.neo4j.driver.Values.ofString;
 
@@ -69,9 +66,9 @@ public class CreateDatabaseService {
 
         String query = "CREATE DATABASE `%s` IF NOT EXISTS ".formatted(name);
 
-        if (fromUri != null && isNeo4j5()) {
+        if (fromUri != null && isNeo4j5OrAbove()) {
             LOG.info("seedFromUri detected, will seed database from {}", fromUri);
-            query = "%s OPTIONS { existingData: \"use\", seedUri: \"%s\"} ".formatted(query, fromUri);
+            query = "%s OPTIONS { existingData: \"use\", seedURI: \"%s\"} ".formatted(query, fromUri);
         }
         query = "%s WAIT".formatted(query);
 
@@ -79,6 +76,7 @@ public class CreateDatabaseService {
         LOG.debug("Query : {}", query);
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
             var result = session.run(query).list().get(0);
+            System.out.println(result.asMap());
             var success = result.get("success").asBoolean();
             var message = result.get("message").asString();
 
@@ -91,11 +89,13 @@ public class CreateDatabaseService {
         waitDatabaseIsOnline(name);
     }
 
-    private boolean isNeo4j5() {
+    private boolean isNeo4j5OrAbove() {
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
-            var version = session.run("CALL dbms.components() YIELD versions RETURN versions[0] AS version").single().get("version").asString();
+            var result = session.run("CALL dbms.components()");
+            var dbmsComponents = result.list().stream().map(r -> r.as(DbmsComponent.class)).toList();
+            var version = dbmsComponents.stream().filter(c -> c.name().equals("Neo4j Kernel")).findFirst().get().versions().get(0);
 
-            return version.startsWith("5");
+            return version.startsWith("5") || version.startsWith("20");
         }
     }
 
@@ -114,13 +114,13 @@ public class CreateDatabaseService {
         if (null != database.constraints()) {
             database.constraints().nodes()
                     .stream().filter(c -> {
-                        return !c.type().equals(ConstraintType.PROPERTY_TYPE) || isNeo4j5();
+                        return !c.type().equals(ConstraintType.PROPERTY_TYPE) || isNeo4j5OrAbove();
                     })
                     .forEach(constraint -> {
                 new CreateNodeConstraint(driver, constraint).createConstraintOnDatabase(database.name());
             });
 
-            if (isNeo4j5()) {
+            if (isNeo4j5OrAbove()) {
                 database.constraints().relationships().forEach(relationshipConstraint -> {
                     new CreateRelationshipConstraint(driver, relationshipConstraint).createSchemaConstraintForRelationship(database.name());
                 });
