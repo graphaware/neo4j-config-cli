@@ -75,16 +75,20 @@ public class CreateDatabaseService {
         LOG.info("Creating database {} ", name);
         LOG.debug("Query : {}", query);
         try (Session session = driver.session(SessionConfig.forDatabase("system"))) {
-            var result = session.run(query).list().get(0);
-            System.out.println(result.asMap());
-            var success = result.get("success").asBoolean();
-            var message = result.get("message").asString();
+            var result = session.run(query).list();
+            if (!result.isEmpty()) {
+                var record = result.get(0);
+                System.out.println(record.asMap());
+                var success = record.get("success").asBoolean();
+                var message = record.get("message").asString();
 
-            if (!success) {
-                LOG.error("Creating database %s with seedURI failed with the following message : %s".formatted(name, message));
-                LOG.info("Dropping database %s after failed seedURI".formatted(name));
-                return;
+                if (!success) {
+                    LOG.error("Creating database %s with seedURI failed with the following message : %s".formatted(name, message));
+                    LOG.info("Dropping database %s after failed seedURI".formatted(name));
+                    return;
+                }
             }
+            // cypher25 doesn't return results
         }
         waitDatabaseIsOnline(name);
     }
